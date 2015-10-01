@@ -1,3 +1,3 @@
 # Navigation UHK
 
-Aplikace psaná v rámci bakalářské práce
+Radio-map based navigation project.
