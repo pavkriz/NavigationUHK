@@ -12,6 +12,6 @@ public class SettingsFactory {
     public static LocalizationServicePoint pointB = new LocalizationServicePoint(642,39,new Float(50.2045247),new Float(15.8297047));
     public static LocalizationServicePoint pointC = new LocalizationServicePoint(26,794, new Float(50.2040850), new Float(15.8289544));
 
-    public static String LOGIN_URL = "http://node.ukuree.cz";
-    public static String DB_URL = "http://db.ukuree.cz/gw/";
+    public static String LOGIN_URL = "http://beacon.uhk.cz/auth";
+    public static String DB_URL = "http://beacon.uhk.cz/beacongw";
 }

@@ -47,7 +47,12 @@ public class LoginWebViewInterface {
     public void setCouchId(String couchId)
     {
         this.couhBaseId = couchId;
-        System.out.println(couchId);
+        System.out.println("setCouchId:" + couchId);
+    }
+
+    @JavascriptInterface
+    public void done() {
         activity.run(cookieName, sessionId, expireTime, couhBaseId);
+        System.out.println("DONE");
     }
 }

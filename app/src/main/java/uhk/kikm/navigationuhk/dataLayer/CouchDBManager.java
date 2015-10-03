@@ -45,7 +45,7 @@ public class CouchDBManager {
     Database db;
     URL serverURL;
 
-    final String DB_NAME = "scan_uhk"; // Nazev DB
+    final String DB_NAME = "beacon"; // Nazev DB
     final String VIEW_BY_MAC = "by_mac"; // Nazev pohledu, ktery vyhleda dokumetny podle MAC adres
     final String VIEW_BY_BLE_ADDRESS = "by_ble_mac"; // Nazev pohledu, ktery vyhleda dokumenty podle Bluetooth adres
     final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"; // Format pouzivaneho casu - ROK-MESIC-DEN HODINA:MINUTA:SEKUNDA
@@ -217,7 +217,10 @@ public class CouchDBManager {
                 QueryRow row = it.next();
                 Document doc = row.getDocument();
 
-                fingerprints.add(getFingerprintFormDocument(doc));
+                Fingerprint p = getFingerprintFormDocument(doc);
+                if (p != null) {
+                    fingerprints.add(p);
+                }
             }
         }
         catch (CouchbaseLiteException cle)
@@ -252,7 +255,10 @@ public class CouchDBManager {
                 QueryRow row = it.next();
                 Document doc = row.getDocument();
 
-                fingerprints.add(getFingerprintFormDocument(doc));
+                Fingerprint p = getFingerprintFormDocument(doc);
+                if (p != null) {
+                    fingerprints.add(p);
+                }
             }
         }
         catch (CouchbaseLiteException cle)
@@ -288,7 +294,10 @@ public class CouchDBManager {
                 QueryRow row = it.next();
                 Document doc = row.getDocument();
 
-                fingerprints.add(getFingerprintFormDocument(doc));
+                Fingerprint p = getFingerprintFormDocument(doc);
+                if (p != null) {
+                    fingerprints.add(p);
+                }
             }
         }
         catch (CouchbaseLiteException cle)
@@ -316,7 +325,10 @@ public class CouchDBManager {
                 QueryRow row = it.next();
                 Document doc = row.getDocument();
 
-                fingerprints.add(getFingerprintFormDocument(doc));
+                Fingerprint p = getFingerprintFormDocument(doc);
+                if (p != null) {
+                    fingerprints.add(p);
+                }
             }
         }
         catch (CouchbaseLiteException cle)
@@ -439,7 +451,7 @@ public class CouchDBManager {
             Map<String, Object> scanProperties = new HashMap<>();
             scanProperties.put("ssid",s.getSSID());
             scanProperties.put("mac",s.getMAC());
-            scanProperties.put("strentgh",String.valueOf(s.getStrenght()));
+            scanProperties.put("rssi",s.getStrenght());
 
             scansArray.add(scanProperties);
         }
@@ -453,7 +465,7 @@ public class CouchDBManager {
             for (BleScan s : bleScans) {
                 Map<String, Object> bleScanProperties = new HashMap<>();
                 bleScanProperties.put("address", s.getAddress());
-                bleScanProperties.put("rssi", String.valueOf(s.getRssi()));
+                bleScanProperties.put("rssi", s.getRssi());
 
                 bleScanProperties.put("scanRecord", s.getScanRecord());
 
@@ -479,93 +491,99 @@ public class CouchDBManager {
      */
     private Fingerprint getFingerprintFormDocument(Document doc)
     {
-        Fingerprint p = new Fingerprint();
-        // poloha
-        p.setX(Integer.parseInt(doc.getProperty("x").toString()));
-        p.setY(Integer.parseInt(doc.getProperty("y").toString()));
-        // datum vytvoreni zaznamu, resp. datum skenovani
-        p.setCreatedDate(getDate(doc.getProperty("createdAt").toString()));
-        // nejaky balast
-        p.setDescription(parseProperty("description", doc));
-        p.setId(doc.getProperty("_id").toString());
-        // jake patro....
-        p.setLevel(Integer.parseInt(doc.getProperty("level").toString()));
 
-        // parsovani dalsich dat....
-        p.setBoard(parseProperty("board", doc));
-        p.setBootloader(parseProperty("bootloader", doc));
-        p.setBrand(parseProperty("brand", doc));
-        p.setDevice(parseProperty("device", doc));
-        p.setDisplay(parseProperty("display", doc));
-        p.setFingerprint(parseProperty("fingerprint", doc));
-        p.setHardware(parseProperty("hardware", doc));
-        p.setHost(parseProperty("host", doc));
-        p.setOsId(parseProperty("osId", doc));
-        p.setManufacturer(parseProperty("manufacturer", doc));
-        p.setModel(parseProperty("model", doc));
-        p.setProduct(parseProperty("product", doc));
-        p.setSerial(parseProperty("serial", doc));
-        p.setTags(parseProperty("tags", doc));
-        p.setType(parseProperty("type", doc));
-        p.setUser(parseProperty("userAndroid", doc));
+        try {
+            Fingerprint p = new Fingerprint();
+            // poloha
+            p.setX(Integer.parseInt(doc.getProperty("x").toString()));
+            p.setY(Integer.parseInt(doc.getProperty("y").toString()));
+            // datum vytvoreni zaznamu, resp. datum skenovani
+            p.setCreatedDate(getDate(doc.getProperty("createdAt").toString()));
+            // nejaky balast
+            p.setDescription(parseProperty("description", doc));
+            p.setId(doc.getProperty("_id").toString());
+            // jake patro....
+            p.setLevel(Integer.parseInt(doc.getProperty("level").toString()));
 
-        p.setDeviceID(parseProperty("deviceId", doc));
+            // parsovani dalsich dat....
+            p.setBoard(parseProperty("board", doc));
+            p.setBootloader(parseProperty("bootloader", doc));
+            p.setBrand(parseProperty("brand", doc));
+            p.setDevice(parseProperty("device", doc));
+            p.setDisplay(parseProperty("display", doc));
+            p.setFingerprint(parseProperty("fingerprint", doc));
+            p.setHardware(parseProperty("hardware", doc));
+            p.setHost(parseProperty("host", doc));
+            p.setOsId(parseProperty("osId", doc));
+            p.setManufacturer(parseProperty("manufacturer", doc));
+            p.setModel(parseProperty("model", doc));
+            p.setProduct(parseProperty("product", doc));
+            p.setSerial(parseProperty("serial", doc));
+            p.setTags(parseProperty("tags", doc));
+            p.setType(parseProperty("type", doc));
+            p.setUser(parseProperty("userAndroid", doc));
 
-        // Parsovani polohy zarizeni v prostoru
-        p.setAccX(Float.valueOf(parseProperty("accX", doc)));
-        p.setAccY(Float.valueOf(parseProperty("accY", doc)));
-        p.setAccZ(Float.valueOf(parseProperty("accZ", doc)));
+            p.setDeviceID(parseProperty("deviceId", doc));
 
-        p.setGyroX(Float.valueOf(parseProperty("gyroX", doc)));
-        p.setGyroY(Float.valueOf(parseProperty("gyroY", doc)));
-        p.setGyroZ(Float.valueOf(parseProperty("gyroZ", doc)));
+            // Parsovani polohy zarizeni v prostoru
+            p.setAccX(Float.valueOf(parseProperty("accX", doc)));
+            p.setAccY(Float.valueOf(parseProperty("accY", doc)));
+            p.setAccZ(Float.valueOf(parseProperty("accZ", doc)));
 
-        p.setMagX(Float.valueOf(parseProperty("magX", doc)));
-        p.setMagY(Float.valueOf(parseProperty("magY", doc)));
-        p.setMagZ(Float.valueOf(parseProperty("magZ", doc)));
+            p.setGyroX(Float.valueOf(parseProperty("gyroX", doc)));
+            p.setGyroY(Float.valueOf(parseProperty("gyroY", doc)));
+            p.setGyroZ(Float.valueOf(parseProperty("gyroZ", doc)));
 
-        // GPS souradnice
-        p.setLat(Float.valueOf(parseProperty("lat", doc)));
-        p.setLon(Float.valueOf(parseProperty("lon", doc)));
+            p.setMagX(Float.valueOf(parseProperty("magX", doc)));
+            p.setMagY(Float.valueOf(parseProperty("magY", doc)));
+            p.setMagZ(Float.valueOf(parseProperty("magZ", doc)));
 
-        // Parsovani skenu... We need to go deeper... List<Map<String, Object>>
+            // GPS souradnice
+            p.setLat(Float.valueOf(parseProperty("lat", doc)));
+            p.setLon(Float.valueOf(parseProperty("lon", doc)));
 
-        List<Map<String, Object>> scans = (List) doc.getProperty("scans");
-        for (Map<String, Object> scan : scans)
-        {
-            Scan s = new Scan();
+            // Parsovani skenu... We need to go deeper... List<Map<String, Object>>
 
-            s.setMAC(scan.get("mac").toString());
-            s.setSSID(scan.get("ssid").toString());
-            s.setStrentgh(Integer.parseInt(scan.get("strentgh").toString()));
+            List<Map<String, Object>> scans = (List) doc.getProperty("scans");
+            for (Map<String, Object> scan : scans) {
+                Scan s = new Scan();
 
-            p.addScan(s);
-        }
+                s.setMAC(scan.get("mac").toString());
+                s.setSSID(scan.get("ssid").toString());
+                s.setStrentgh(Integer.parseInt(scan.get("rssi").toString()));
 
-        // parsovanui bleScanu
-        if (doc.getProperty("bleScans") != null) { // Pokud neni null
-            if (!doc.getProperty("bleScans").equals("[]")) { // nebo nebyly zaznamenany vysilace
-                List<Map<String, Object>> bleScans = (List) doc.getProperty("bleScans");
-                for (Map<String, Object> scan : bleScans) {
-                    BleScan bleScan = new BleScan();
+                p.addScan(s);
+            }
 
-                    bleScan.setAddress(scan.get("address").toString());
-                    bleScan.setRssi(Integer.parseInt(scan.get("rssi").toString()));
+            // parsovanui bleScanu
+            if (doc.getProperty("bleScans") != null) { // Pokud neni null
+                if (!doc.getProperty("bleScans").equals("[]")) { // nebo nebyly zaznamenany vysilace
+                    List<Map<String, Object>> bleScans = (List) doc.getProperty("bleScans");
+                    for (Map<String, Object> scan : bleScans) {
+                        BleScan bleScan = new BleScan();
 
-                    List<Byte> scanRecordList = (List) doc.getProperty("scanRecord") == null ? new ArrayList<>() : (List) doc.getProperty("scanRecord");
-                    byte[] scanRecord = new byte[scanRecordList.size()];
+                        bleScan.setAddress(scan.get("address").toString());
+                        bleScan.setRssi(Integer.parseInt(scan.get("rssi").toString()));
 
-                    for (int i = 0; i < scanRecordList.size(); i++) {
-                        scanRecord[i] = Byte.valueOf(scanRecordList.get(i));
+                        List<Byte> scanRecordList = (List) doc.getProperty("scanRecord") == null ? new ArrayList<>() : (List) doc.getProperty("scanRecord");
+                        byte[] scanRecord = new byte[scanRecordList.size()];
+
+                        for (int i = 0; i < scanRecordList.size(); i++) {
+                            scanRecord[i] = Byte.valueOf(scanRecordList.get(i));
+                        }
+                        bleScan.setScanRecord(scanRecord);
+
+                        p.addBleScan(bleScan);
                     }
-                    bleScan.setScanRecord(scanRecord);
-
-                    p.addBleScan(bleScan);
                 }
             }
+            return p;
+        } catch (Exception e) {
+            System.err.println("Document " + doc.getId() + " does not seem to be a fingerprint");
+            e.printStackTrace();
+            return null;
         }
 
-        return p;
     }
 
     /**
