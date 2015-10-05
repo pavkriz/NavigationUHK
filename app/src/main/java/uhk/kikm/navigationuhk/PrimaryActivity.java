@@ -118,19 +118,19 @@ public class PrimaryActivity extends ActionBarActivity {
      * @param y y bodu
      * @param level cislo patra
      */
-    private void showPoint(int x, int y, int level)
+    private void showPoint(int x, int y, String level)
     {
         switch (level) {
-            case 1:
+            case "J1NP":
                 view.loadUrl("javascript:setPoint(" + String.valueOf(x) + ", " + String.valueOf(y) + ", \"red\"" + ")");
                 break;
-            case 2:
+            case "J2NP":
                 view.loadUrl("javascript:setPoint(" + String.valueOf(x) + ", " + String.valueOf(y) + ", \"blue\"" + ")");
                 break;
-            case 3:
+            case "J3NP":
                 view.loadUrl("javascript:setPoint(" + String.valueOf(x) + ", " + String.valueOf(y) + ", \"green\"" + ")");
                 break;
-            case 4:
+            case "J4NP":
                 view.loadUrl("javascript:setPoint(" + String.valueOf(x) + ", " + String.valueOf(y) + ", \"yellow\"" + ")");
                 break;
         }

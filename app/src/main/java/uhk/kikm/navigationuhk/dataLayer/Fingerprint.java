@@ -12,7 +12,7 @@ public class Fingerprint {
     // couchDB identificator
     String id;
 
-    int level;
+    String level;
 
     int x;
     int y;
@@ -84,11 +84,11 @@ public class Fingerprint {
         this.id = id;
     }
 
-    public int getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 

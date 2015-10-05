@@ -481,7 +481,4 @@
             id="path3245"
             style="fill:none;stroke:#000000;stroke-width:1.22757316px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     </g>
-    <circle id="ball" cx="-10" cy="-10" r="10" stroke="black" fill="none" />
-    <circle id="point" cx="-10" cy="-10" r="10" stroke="black" fill="red" />
-    <circle id="ble_point" cx="-10" cy="-10" r="10" stroke="black" fill="black" />
 </svg>

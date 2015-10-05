@@ -503,7 +503,7 @@ public class CouchDBManager {
             p.setDescription(parseProperty("description", doc));
             p.setId(doc.getProperty("_id").toString());
             // jake patro....
-            p.setLevel(Integer.parseInt(doc.getProperty("level").toString()));
+            p.setLevel(doc.getProperty("level").toString());
 
             // parsovani dalsich dat....
             p.setBoard(parseProperty("board", doc));

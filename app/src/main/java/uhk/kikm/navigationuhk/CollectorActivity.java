@@ -1,13 +1,15 @@
 package uhk.kikm.navigationuhk;
 
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.net.wifi.ScanResult;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -16,6 +18,8 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,22 +52,20 @@ public class CollectorActivity extends ActionBarActivity {
     SensorScanner sensorScanner;
     DeviceInformation deviceInformation;
     LocalizationService localizationService;
-    int selectedLevel;
+    String selectedLevel = "J3NP";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_collector);
 
         webInterface = new WebViewInterface(this);
 
         view = (WebView) findViewById(R.id.WebView);
+        if (0 != (getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE)) { WebView.setWebContentsDebuggingEnabled(true); }
         view.getSettings().setJavaScriptEnabled(true); // povoleni JS
-        view.getSettings().setBuiltInZoomControls(true); // Zapnuti zoom controls
-        view.getSettings().setSupportZoom(true);
-        view.setWebViewClient(new WebViewClient());
-        view.loadData(readTextFromResource(R.drawable.uhk_j_2_level), null, "UTF-8"); // nacteni souboru do prohlizece
         view.addJavascriptInterface(webInterface, "android"); // nastaveni JS interface
+        view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 
         final Button newPointButton = (Button) findViewById(R.id.write_point);
 
@@ -90,8 +92,7 @@ public class CollectorActivity extends ActionBarActivity {
 
         localizationService = new LocalizationService(SettingsFactory.pointA, SettingsFactory.pointB, SettingsFactory.pointC); // nastavujeme souradnicovy system pro vypocet GPS souradnic
 
-        selectedLevel = 2;
-        Toast.makeText(this , selectedLevel + ". Patro", Toast.LENGTH_SHORT).show();
+        changeLevel(selectedLevel);
     }
 
     public void writePoint()
@@ -116,6 +117,10 @@ public class CollectorActivity extends ActionBarActivity {
         }
 
 
+    }
+
+    public void writePointTest() {
+        Toast.makeText(this, " X,Y:" + webInterface.getX() + ","+ webInterface.getY(), Toast.LENGTH_LONG).show();
     }
 
 
@@ -149,24 +154,16 @@ public class CollectorActivity extends ActionBarActivity {
             findPosition();
         }
         else if(id == R.id.action_level_1) { // 1. patro
-            selectedLevel = 1;
-            Toast.makeText(this , selectedLevel + ". Patro", Toast.LENGTH_SHORT).show();
-            changeLevel(selectedLevel);
+            changeLevel("J1NP");
         }
         else if(id == R.id.action_level_2) { // 2. patro
-            selectedLevel = 2;
-            Toast.makeText(this , selectedLevel + ". Patro", Toast.LENGTH_SHORT).show();
-            changeLevel(selectedLevel);
+            changeLevel("J2NP");
         }
         else if(id == R.id.action_level_3) { // 3. patro
-            selectedLevel = 3;
-            Toast.makeText(this , selectedLevel + ". Patro", Toast.LENGTH_SHORT).show();
-            changeLevel(selectedLevel);
+            changeLevel("J3NP");
         }
         else if(id == R.id.action_level_4) { // 4. patro
-            selectedLevel = 4;
-            Toast.makeText(this , selectedLevel + ". Patro", Toast.LENGTH_SHORT).show();
-            changeLevel(selectedLevel);
+            changeLevel("J4NP");
         }
         else if(id == R.id.action_find_ble) { // BLE hledani
             findPositionByBle();
@@ -179,26 +176,15 @@ public class CollectorActivity extends ActionBarActivity {
      * Reloaduje obrazek patra
      * @param level cislo patra
      */
-    private void changeLevel(int level) {
-        switch (level) {
-            case 1:
-                view.loadData(readTextFromResource(R.drawable.uhk_j_1_level), null, "UTF-8"); // nacteni souboru do prohlizece
-                view.reload();
-                break;
-            case 2:
-                view.loadData(readTextFromResource(R.drawable.uhk_j_2_level), null, "UTF-8"); // nacteni souboru do prohlizece
-                view.reload();
-                break;
-            case 3:
-                view.loadData(readTextFromResource(R.drawable.uhk_j_3_level), null, "UTF-8"); // nacteni souboru do prohlizece
-                view.reload();
-                break;
-            case 4:
-                view.loadData(readTextFromResource(R.drawable.uhk_j_4_level), null, "UTF-8"); // nacteni souboru do prohlizece
-                view.reload();
-                break;
-
-        }
+    private void changeLevel(String level) {
+        try {
+            view.loadUrl("http://beacon.uhk.cz/fimnav-webview/?map=" + URLEncoder.encode(level, "UTF-8"));  // nacteni souboru do prohlizece
+            //view.reload();
+            Toast.makeText(this , level, Toast.LENGTH_SHORT).show();
+            selectedLevel = level;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        };
     }
 
     /**
@@ -284,22 +270,9 @@ public class CollectorActivity extends ActionBarActivity {
      * @param y y bodu
      * @param level cislo patra
      */
-    private void showPoint(int x, int y, int level)
+    private void showPoint(int x, int y, String level)
     {
-        switch (level) {
-            case 1:
-                view.loadUrl("javascript:setPoint(" + String.valueOf(x) + ", " + String.valueOf(y) + ", \"red\"" + ")");
-                break;
-            case 2:
-                view.loadUrl("javascript:setPoint(" + String.valueOf(x) + ", " + String.valueOf(y) + ", \"blue\"" + ")");
-                break;
-            case 3:
-                view.loadUrl("javascript:setPoint(" + String.valueOf(x) + ", " + String.valueOf(y) + ", \"green\"" + ")");
-                break;
-            case 4:
-                view.loadUrl("javascript:setPoint(" + String.valueOf(x) + ", " + String.valueOf(y) + ", \"yellow\"" + ")");
-                break;
-        }
+            view.loadUrl("javascript:setPoint(" + String.valueOf(x) + ", " + String.valueOf(y) + ", \"red\"" + ")");
     }
 
     /**
