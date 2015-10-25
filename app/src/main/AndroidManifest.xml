@@ -1,71 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="uhk.kikm.navigationuhk" >
+<manifest package="uhk.kikm.navigationuhk"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="false"/>
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name=".CollectorActivity"
-            android:label="@string/title_collector_mode" >
+            android:name=".activities.CollectorActivity"
+            android:label="@string/title_collector_mode">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="uhk.kikm.navigationuhk.PrimaryActivity" />
+                android:value=".activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".ListPositionsActivity"
+            android:name=".activities.ListPositionsActivity"
             android:label="@string/title_activity_list_positions"
             android:noHistory="true"
-            android:parentActivityName=".CollectorActivity" >
+            android:parentActivityName=".activities.CollectorActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".CollectorActivity" />
+                android:value=".activities.CollectorActivity"/>
         </activity>
         <activity
-            android:name=".PositionInfoActivity"
+            android:name=".activities.PositionInfoActivity"
             android:label="@string/title_activity_position_info"
             android:noHistory="true"
-            android:parentActivityName=".ListPositionsActivity" >
+            android:parentActivityName=".activities.ListPositionsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="uhk.kikm.navigationuhk.ListPositionsActivity" />
+                android:value=".activities.ListPositionsActivity"/>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:noHistory="true"
-            android:parentActivityName=".CollectorActivity" >
+            android:parentActivityName=".activities.CollectorActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".CollectorActivity" />
+                android:value=".activities.CollectorActivity"/>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login"
             android:noHistory="true"
-            android:parentActivityName=".CollectorActivity" >
+            android:parentActivityName=".activities.CollectorActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".CollectorActivity" />
+                android:value=".activities.CollectorActivity"/>
         </activity>
         <activity
-            android:name=".PrimaryActivity"
-            android:label="@string/title_activity_primary" >
+            android:name=".activities.MainActivity"
+            android:label="@string/title_activity_primary">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
     </application>

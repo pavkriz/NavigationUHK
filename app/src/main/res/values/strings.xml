@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Navigation UHK</string>
     <string name="action_settings">Nastavení</string>
     <string name="action_list">Seznam fingerprintů</string>
     <string name="write_point">Vytvořit zde fingerprint</string>
-    <string name="title_activity_list_positions">List of Positions</string>
-    <string name="hello_world">Hello world!</string>
     <string name="find">Wifi hledání</string>
     <string name="find_ble">BLE hledání</string>
     <string name="action_download">Stáhnout DB</string>
     <string name="action_upload">Nahrát DB</string>
+    <string name="remove">Odstranit</string>
+    <string name="cancel">Zrušit</string>
+    <string name="insufficient_wifi_data">Nedostatek Wifi dat</string>
+    <string name="wait">Čekejte&#8230;</string>
+    <string name="sync_progress">Probíhá synchronizace&#8230;</string>
+
     <string name="title_activity_position_info">Informace</string>
     <string name="title_activity_login">Přihlášení uživatele</string>
     <string name="title_activity_primary">Navigation UHK</string>
+    <string name="title_activity_list_positions">Seznam pozic</string>
 
     <string name="title_level1">Patro 1</string>
     <string name="title_level2">Patro 2</string>
@@ -23,5 +27,13 @@
     <string name="title_find">Hledej</string>
     <string name="title_download_db">Stáhnout DB</string>
 
+    <string name="searching">Hledám&#8230;</string>
+    <string name="downloading">Stahuji&#8230;</string>
+    <string name="db_needed">Je nutne stahnout DB</string>
 
+    <string name="remove_dialog_title">Odstranění pozice</string>
+    <string name="remove_dialog_message">Chcete odstranit vybranou pozici?</string>
+
+    <string name="collector_dialog_title">Skenuji… ani se nehni!</string>
+    <string name="collector_coordinates_change">Musi byt jine souradnice</string>
 </resources>

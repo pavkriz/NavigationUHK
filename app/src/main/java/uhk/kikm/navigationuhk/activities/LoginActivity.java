@@ -1,5 +1,6 @@
-package uhk.kikm.navigationuhk;
+package uhk.kikm.navigationuhk.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -10,6 +11,8 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import uhk.kikm.navigationuhk.R;
+import uhk.kikm.navigationuhk.utils.C;
 import uhk.kikm.navigationuhk.utils.LoginWebViewInterface;
 
 /**
@@ -20,6 +23,7 @@ import uhk.kikm.navigationuhk.utils.LoginWebViewInterface;
 
 public class LoginActivity extends ActionBarActivity {
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +33,7 @@ public class LoginActivity extends ActionBarActivity {
 
         WebView webView = (WebView) findViewById(R.id.webViewLogin);
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl(SettingsFactory.LOGIN_URL);
+        webView.loadUrl(C.LOGIN_URL);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.addJavascriptInterface(loginInterface, "Android");
     }
@@ -61,7 +65,7 @@ public class LoginActivity extends ActionBarActivity {
         editor.putString("session_id", sessionId);
         editor.putString("expire_time", expireTime);
 
-        editor.commit(); // ulozeni dat
+        editor.apply(); // ulozeni dat
 
         Intent intent = new Intent(this, CollectorActivity.class);
         startActivity(intent);
@@ -76,6 +80,8 @@ public class LoginActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, CollectorActivity.class); //TODO nezapomenout smazat a nechat jen return
+            startActivity(intent);
             return true;
         }
 

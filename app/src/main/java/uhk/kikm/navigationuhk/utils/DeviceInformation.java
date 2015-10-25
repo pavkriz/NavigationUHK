@@ -1,6 +1,7 @@
 package uhk.kikm.navigationuhk.utils;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
@@ -12,17 +13,14 @@ import uhk.kikm.navigationuhk.dataLayer.Fingerprint;
  * Dominik Matoulek 2015
  */
 public class DeviceInformation {
-
-    TelephonyManager telephonyManager;
-    Build build;
+    Context context;
 
     /**
      * Inicializuje DeviceInformation
      * @param context context
      */
     public DeviceInformation(Context context) {
-        build = new Build();
-        telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        this.context = context;
     }
 
     /**
@@ -32,23 +30,24 @@ public class DeviceInformation {
      */
     public Fingerprint fillPosition(Fingerprint p)
     {
-        p.setDeviceID(telephonyManager.getDeviceId());
-        p.setBoard(build.BOARD);
-        p.setBootloader(build.BOOTLOADER);
-        p.setBrand(build.BRAND);
-        p.setDevice(build.DEVICE);
-        p.setDisplay(build.DISPLAY);
-        p.setFingerprint(build.FINGERPRINT);
-        p.setHardware(build.HARDWARE);
-        p.setHost(build.HOST);
-        p.setOsId(build.ID);
-        p.setManufacturer(build.MANUFACTURER);
-        p.setModel(build.MODEL);
-        p.setProduct(build.PRODUCT);
-        p.setSerial(build.SERIAL);
-        p.setTags(build.TAGS);
-        p.setType(build.TYPE);
-        p.setUser(build.USER);
+        p.setSupportsBLE(context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE));
+        p.setDeviceID(((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId());
+        p.setBoard(Build.BOARD);
+        p.setBootloader(Build.BOOTLOADER);
+        p.setBrand(Build.BRAND);
+        p.setDevice(Build.DEVICE);
+        p.setDisplay(Build.DISPLAY);
+        p.setFingerprint(Build.FINGERPRINT);
+        p.setHardware(Build.HARDWARE);
+        p.setHost(Build.HOST);
+        p.setOsId(Build.ID);
+        p.setManufacturer(Build.MANUFACTURER);
+        p.setModel(Build.MODEL);
+        p.setProduct(Build.PRODUCT);
+        p.setSerial(Build.SERIAL);
+        p.setTags(Build.TAGS);
+        p.setType(Build.TYPE);
+        p.setUser(Build.USER);
         return p;
     }
 }

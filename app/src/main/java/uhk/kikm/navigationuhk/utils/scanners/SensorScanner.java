@@ -1,4 +1,4 @@
-package uhk.kikm.navigationuhk.utils;
+package uhk.kikm.navigationuhk.utils.scanners;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -14,7 +14,6 @@ import uhk.kikm.navigationuhk.dataLayer.Fingerprint;
  */
 public class SensorScanner {
 
-    private SensorManager sensorManager;
     private SensorEventListener sensorEventListener;
 
     private float accX, accY, accZ, gyroX, gyroY, gyroZ, magX, magY, magZ;
@@ -24,10 +23,9 @@ public class SensorScanner {
      * @param context context
      */
     public SensorScanner(Context context) {
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
         initListeners();
-
         sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_FASTEST);

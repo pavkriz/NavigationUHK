@@ -1,5 +1,6 @@
-package uhk.kikm.navigationuhk;
+package uhk.kikm.navigationuhk.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.support.v7.app.ActionBarActivity;
@@ -16,21 +17,23 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import uhk.kikm.navigationuhk.R;
 import uhk.kikm.navigationuhk.dataLayer.CouchDBManager;
 import uhk.kikm.navigationuhk.dataLayer.Fingerprint;
 import uhk.kikm.navigationuhk.utils.WifiFinder;
-import uhk.kikm.navigationuhk.utils.WifiScanner;
+import uhk.kikm.navigationuhk.utils.scanners.WifiScanner;
 
 /**
  * Odlehcena verze CollectorActivity urcena pouze ke hledani
  */
 
-public class PrimaryActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity {
 
     WebView view;
     CouchDBManager dbManager;
     WifiScanner wifiScanner;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +52,7 @@ public class PrimaryActivity extends ActionBarActivity {
         Toast.makeText(this, getString(R.string.title_level2), Toast.LENGTH_SHORT).show();
 
         wifiScanner = new WifiScanner(this);
-        wifiScanner.findAll();
+        wifiScanner.startScan(false);
     }
 
 
@@ -81,7 +84,7 @@ public class PrimaryActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_find) {
-            Toast.makeText(this, "Hledam", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.searching, Toast.LENGTH_SHORT).show();
             findPosition();
         }
         else if (id == R.id.action_level_1) {
@@ -101,7 +104,7 @@ public class PrimaryActivity extends ActionBarActivity {
             changeLevel(4);
         }
         else if (id == R.id.action_download) {
-            Toast.makeText(this, "Stahuji...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.downloading, Toast.LENGTH_SHORT).show();
             downloadDB();
         }
         else if (id == R.id.action_change_mode) {
@@ -149,11 +152,11 @@ public class PrimaryActivity extends ActionBarActivity {
      */
     private void findPosition() {
         if (!dbManager.existDB()) // pokud DB neexstuje, je nutne stahnout data
-            Toast.makeText(this, "Je nutne stahnout DB", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.db_needed, Toast.LENGTH_SHORT).show();
         else
         {
-            wifiScanner.findAll();
-            List<ScanResult> scanResults = wifiScanner.getScanResults();
+            wifiScanner.startScan(false);
+            List<ScanResult> scanResults = wifiScanner.getScans();
 
             ArrayList<Fingerprint> fingerprints = new ArrayList<>();
 
@@ -173,7 +176,7 @@ public class PrimaryActivity extends ActionBarActivity {
                 showPoint(possibleFingerprint.getX(), possibleFingerprint.getY(), possibleFingerprint.getLevel());
             }
             else
-                Toast.makeText(this , "Nedostatek Wifi dat", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this , R.string.insufficient_wifi_data, Toast.LENGTH_SHORT).show();
         }
     }
 

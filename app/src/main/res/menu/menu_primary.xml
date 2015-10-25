@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="uhk.kikm.navigationuhk.PrimaryActivity">
+    tools:context="uhk.kikm.navigationuhk.activities.MainActivity">
     <item android:id="@+id/action_find" android:title="@string/title_find"
         android:orderInCategory="100" app:showAsAction="ifRoom|never" />
     <item android:id="@+id/action_level_1" android:title="@string/title_level1"

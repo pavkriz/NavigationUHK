@@ -1,9 +1,9 @@
 package uhk.kikm.navigationuhk.utils;
 
-import android.app.Activity;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 
-import uhk.kikm.navigationuhk.LoginActivity;
+import uhk.kikm.navigationuhk.activities.LoginActivity;
 
 /**
  * Trida reprezentujici JavascriptInterface pro LoginActivity
@@ -23,36 +23,28 @@ public class LoginWebViewInterface {
     }
 
     @JavascriptInterface
-    public void setSessionId(String sessionId)
-    {
+    public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
-        System.out.println(sessionId);
     }
 
     @JavascriptInterface
-    public void setCookieName(String cookieName)
-    {
+    public void setCookieName(String cookieName) {
         this.cookieName = cookieName;
-        System.out.println(cookieName);
     }
 
     @JavascriptInterface
-    public void setExpires(String expires)
-    {
+    public void setExpires(String expires) {
         this.expireTime = expires;
-        System.out.println(expires);
     }
 
     @JavascriptInterface
-    public void setCouchId(String couchId)
-    {
+    public void setCouchId(String couchId) {
         this.couhBaseId = couchId;
-        System.out.println("setCouchId:" + couchId);
     }
 
     @JavascriptInterface
     public void done() {
         activity.run(cookieName, sessionId, expireTime, couhBaseId);
-        System.out.println("DONE");
+        Log.d(getClass().getName(), "Done");
     }
 }

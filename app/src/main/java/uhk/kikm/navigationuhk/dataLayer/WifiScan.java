@@ -4,18 +4,19 @@ package uhk.kikm.navigationuhk.dataLayer;
  * Modelova trida reprezentujci scan Wifi site
  * Dominik Matoulek 2015
  */
-public class Scan {
+public class WifiScan {
     String SSID;
     String MAC;
     int strenght;
+    long time;
 
-    public Scan(String SSID, String MAC, int strenght) {
+    public WifiScan(String SSID, String MAC, int strenght) {
         this.SSID = SSID;
         this.MAC = MAC;
         this.strenght = strenght;
     }
 
-    public Scan() {
+    public WifiScan() {
     }
 
     public String getSSID() {
@@ -45,10 +46,19 @@ public class Scan {
 
     @Override
     public String toString() {
-        return "Scan{" +
+        return "WifiScan{" +
                 "SSID='" + SSID + '\'' +
                 ", MAC='" + MAC + '\'' +
                 ", strenght=" + strenght +
+                ", time=" + time +
                 '}';
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 }

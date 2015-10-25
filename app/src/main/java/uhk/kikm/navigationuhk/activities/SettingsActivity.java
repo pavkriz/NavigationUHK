@@ -1,4 +1,4 @@
-package uhk.kikm.navigationuhk;
+package uhk.kikm.navigationuhk.activities;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -13,16 +13,18 @@ import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
 
 import java.util.List;
+
+import uhk.kikm.navigationuhk.R;
 
 /**
  * Aktivita pripravena pro budouci moznosti nastavovani - zatim toho moc neumi
@@ -100,7 +102,6 @@ public class SettingsActivity extends PreferenceActivity {
         button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                System.out.println("Klik!");
                 runLoginActivity();
                 return true;
             }
@@ -109,7 +110,7 @@ public class SettingsActivity extends PreferenceActivity {
         EditTextPreference editTextPreference = (EditTextPreference) findPreference("couchbase_sync_gateway_id");
         editTextPreference.setText(PreferenceManager.getDefaultSharedPreferences(this).getString("couchbase_sync_gateway_id", "N/A"));
 
-        System.out.println(PreferenceManager.getDefaultSharedPreferences(this).getString("couchbase_sync_gateway_id", "N/A"));
+        Log.d(getClass().getName(), PreferenceManager.getDefaultSharedPreferences(this).getString("couchbase_sync_gateway_id", "N/A"));
 
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated

@@ -2,14 +2,14 @@
 
     <!-- These settings headers are only used on tablets. -->
 
-    <header android:fragment="uhk.kikm.navigationuhk.SettingsActivity$GeneralPreferenceFragment"
+    <header android:fragment="uhk.kikm.navigationuhk.activities.SettingsActivity$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
 
     <header
-        android:fragment="uhk.kikm.navigationuhk.SettingsActivity$NotificationPreferenceFragment"
+        android:fragment="uhk.kikm.navigationuhk.activities.SettingsActivity$NotificationPreferenceFragment"
         android:title="@string/pref_header_notifications" />
 
-    <header android:fragment="uhk.kikm.navigationuhk.SettingsActivity$DataSyncPreferenceFragment"
+    <header android:fragment="uhk.kikm.navigationuhk.activities.SettingsActivity$DataSyncPreferenceFragment"
         android:title="@string/pref_header_data_sync" />
 
 </preference-headers>

@@ -7,7 +7,7 @@ import java.util.List;
 
 import uhk.kikm.navigationuhk.dataLayer.BleScan;
 import uhk.kikm.navigationuhk.dataLayer.Fingerprint;
-import uhk.kikm.navigationuhk.dataLayer.Scan;
+import uhk.kikm.navigationuhk.dataLayer.WifiScan;
 
 /**
  * Implementace vyhledavani pomoci Bluetooth - je defacto stejna jako i WifiFinderu
@@ -15,7 +15,7 @@ import uhk.kikm.navigationuhk.dataLayer.Scan;
 public class BluetoothFinder {
     private ArrayList<Fingerprint> fingerprints;
     private HashMap<String, Fingerprint> navigationData;
-    private HashMap<Scan, Fingerprint> positionsOfScans;
+    private HashMap<WifiScan, Fingerprint> positionsOfScans;
     private HashMap<Float, Fingerprint> computedDistance;
 
     private final double SIGNAL_NO_RECIEVED = -100; // Minimalni sila signalu, ktery dokaze Bluetooth prijimat
@@ -29,7 +29,7 @@ public class BluetoothFinder {
         for (Fingerprint p : fingerprints) // pro vsechny polohy co obsahuji adresu
         {
             navigationData.put(String.valueOf(p.getX()) + " " + String.valueOf(p.getY()), p); // pridej do seznamu vsechny scany s hasem polohy
-            for (Scan s : p.getScans()) {
+            for (WifiScan s : p.getWifiScans()) {
                 // Kazdy sken patri k urcite poloze... Kazdy sken je take jedinecny, hodnoty muzou byt stejne, ale je jedinencny - je to rychlejsi, nez proheledavani cyklem
                 positionsOfScans.put(s, p);
             }
@@ -52,7 +52,7 @@ public class BluetoothFinder {
         for (Fingerprint p : fingerprints)
         {
 
-            if (p.getScans().size() < scansForIdentify.size()) {
+            if (p.getWifiScans().size() < scansForIdentify.size()) {
                 for (BleScan s : scansForIdentify) {
                     int index = containsAddress(s.getAddress(), p);
 
@@ -101,7 +101,7 @@ public class BluetoothFinder {
      */
     private int containsAddress(String s, Fingerprint p)
     {
-        for(int i = 0; i < p.getScans().size(); i++)
+        for(int i = 0; i < p.getWifiScans().size(); i++)
         {
             if (s.equals(p.getBleScans().get(i).getAddress()));
             {

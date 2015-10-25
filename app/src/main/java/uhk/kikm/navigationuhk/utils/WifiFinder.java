@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import uhk.kikm.navigationuhk.dataLayer.Fingerprint;
-import uhk.kikm.navigationuhk.dataLayer.Scan;
+import uhk.kikm.navigationuhk.dataLayer.WifiScan;
 
 /**
  * Trida reprezentujici vyhledavani polohy
@@ -18,7 +18,7 @@ import uhk.kikm.navigationuhk.dataLayer.Scan;
 public class WifiFinder {
     private ArrayList<Fingerprint> fingerprints;
     private HashMap<String, Fingerprint> navigationData;
-    private HashMap<Scan, Fingerprint> positionsOfScans;
+    private HashMap<WifiScan, Fingerprint> positionsOfScans;
     private HashMap<Float, Fingerprint> computedDistance;
 
     private final double SIGNAL_NO_RECIEVED = -100; // Minimalni sila signalu, ktery dokaze WiFi prijimat - Ekvivalent "nuly"
@@ -36,7 +36,7 @@ public class WifiFinder {
         for (Fingerprint p : fingerprints) // pro vsechny polohy co obsahuji MAC
         {
             navigationData.put(String.valueOf(p.getX()) + " " + String.valueOf(p.getY()), p); // pridej do seznamu vsechny scany s hasem polohy
-            for (Scan s : p.getScans()) {
+            for (WifiScan s : p.getWifiScans()) {
                 // Kazdy sken patri k urcite poloze... Kazdy sken je take jedinecny, hodnoty muzou byt stejne, ale je jedinencny - je to rychlejsi, nez proheledavani cyklem
                 positionsOfScans.put(s, p);
             }
@@ -59,7 +59,7 @@ public class WifiFinder {
         for (Fingerprint p : fingerprints)
         {
 
-            if (p.getScans().size() < scansForIdentify.size()) {
+            if (p.getWifiScans().size() < scansForIdentify.size()) {
                 for (ScanResult s : scansForIdentify) {
                     int index = containsMAC(s.BSSID, p);
 
@@ -72,7 +72,7 @@ public class WifiFinder {
                     }
                 }
             } else {
-                for (Scan s : p.getScans()) {
+                for (WifiScan s : p.getWifiScans()) {
                     int index = containsMAC(s.getMAC(), scansForIdentify);
 
                     if (index >= 0) {
@@ -131,7 +131,7 @@ public class WifiFinder {
      */
     private int containsMAC(String s, Fingerprint p)
     {
-        for(int i = 0; i < p.getScans().size(); i++)
+        for(int i = 0; i < p.getWifiScans().size(); i++)
         {
             if (s.equals(p.getScan(i).getMAC()))
             {

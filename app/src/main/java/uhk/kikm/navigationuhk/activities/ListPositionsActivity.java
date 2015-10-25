@@ -1,10 +1,9 @@
-package uhk.kikm.navigationuhk;
+package uhk.kikm.navigationuhk.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import uhk.kikm.navigationuhk.R;
 import uhk.kikm.navigationuhk.dataLayer.CouchDBManager;
 import uhk.kikm.navigationuhk.dataLayer.Fingerprint;
 
@@ -42,20 +42,19 @@ public class ListPositionsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_list_positions);
 
         dbManager = new CouchDBManager(this);
-        System.out.println("Open db connection in ListPositionsActivity");
+        Log.d(getClass().getName(), "Open db connection");
 
         positionsMap = new HashMap<>();
 
         makeDataForView();
 
         lv = (ListView) findViewById(R.id.listView);
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, positionsStrings);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, positionsStrings);
 
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println(positionsStrings.get(position));
                 showDetailsOfFingerprint(positionsStrings.get(position));
 
             }
@@ -75,7 +74,7 @@ public class ListPositionsActivity extends ActionBarActivity {
               positionsMap.put(String.valueOf(p.getX()) + " " + String.valueOf(p.getY()) + " " + p.getId(), p.getId());
         }
 
-        positionsStrings = new ArrayList<String>(positionsMap.keySet());
+        positionsStrings = new ArrayList<>(positionsMap.keySet());
     }
 
 
@@ -118,7 +117,7 @@ public class ListPositionsActivity extends ActionBarActivity {
         super.onPause();
 
         dbManager.closeConnection();
-        System.out.println("Close db connection in ListPositionsActivity");
+        Log.d(getClass().getName(), "Close db connection");
     }
 
     /**

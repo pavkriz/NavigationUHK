@@ -11,6 +11,7 @@ public class BleScan {
     int rssi;
     byte[] scanRecord;
     String address;
+    long time;
 
     public BleScan() {
     }
@@ -27,6 +28,7 @@ public class BleScan {
                 "rssi=" + rssi +
                 ", scanRecord=" + Arrays.toString(scanRecord) +
                 ", address='" + address + '\'' +
+                ", time=" + time +
                 '}';
     }
 
@@ -52,5 +54,13 @@ public class BleScan {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 }

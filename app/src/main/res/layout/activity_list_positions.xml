@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
 
 
-    tools:context="uhk.kikm.navigationuhk.ListPositionsActivity">
+    tools:context="uhk.kikm.navigationuhk.activities.ListPositionsActivity">
 
     <ListView
         android:layout_width="match_parent"

@@ -1,16 +1,18 @@
-package uhk.kikm.navigationuhk;
+package uhk.kikm.navigationuhk.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import uhk.kikm.navigationuhk.R;
 import uhk.kikm.navigationuhk.dataLayer.CouchDBManager;
 import uhk.kikm.navigationuhk.dataLayer.Fingerprint;
 
@@ -54,22 +56,20 @@ public class PositionInfoActivity extends ActionBarActivity {
     {
         AlertDialog.Builder removeDialog = new AlertDialog.Builder(this);
 
-        removeDialog.setTitle("Odstranění Pozice");
-        removeDialog.setMessage("Chce odstranit vybranou pozici?");
+        removeDialog.setTitle(R.string.remove_dialog_title);
+        removeDialog.setMessage(R.string.remove_dialog_message);
 
-        removeDialog.setPositiveButton("Odstranit", new DialogInterface.OnClickListener() {
+        removeDialog.setPositiveButton(R.string.remove, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                System.out.println("Destroy!!! " + fingerprint.toString());
                 dbManager.removeFingerprint(fingerprint.getId());
                 redirectBack();
             }
         });
 
-        removeDialog.setNegativeButton("Zrušit", new DialogInterface.OnClickListener() {
+        removeDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                System.out.println("not yet...");
             }
         });
 

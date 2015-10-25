@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
@@ -32,11 +33,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import uhk.kikm.navigationuhk.SettingsFactory;
+import uhk.kikm.navigationuhk.R;
+import uhk.kikm.navigationuhk.utils.C;
 
 /**
- * Trida reprezentujici komunikaci s DB vyuzivajici model (tridy Fingerprint, Scan a BleScan)
- *
+ * Trida reprezentujici komunikaci s DB vyuzivajici model (tridy Fingerprint, WifiScan a BleScan)
+ * <p/>
  * Dominik Matoulek 2015
  */
 public class CouchDBManager {
@@ -53,6 +55,7 @@ public class CouchDBManager {
 
     /**
      * Vytvari instanci DbManageru pro komunikaci s DB Couchbase mibole
+     *
      * @param context Context
      */
     public CouchDBManager(Context context) {
@@ -73,10 +76,10 @@ public class CouchDBManager {
             db.getView(VIEW_BY_MAC).setMap(new Mapper() {
                 @Override
                 public void map(Map<String, Object> document, Emitter emitter) {
-                        List<Map<String, Object>> scans = (List) document.get("scans");
-                        for (Map<String, Object> scan : scans) {
-                            emitter.emit(scan.get("mac"), document);
-                        }
+                    List<Map<String, Object>> scans = (List) document.get("wifiScans");
+                    for (Map<String, Object> scan : scans) {
+                        emitter.emit(scan.get("mac"), document);
+                    }
 
                 }
             }, "1");
@@ -86,48 +89,41 @@ public class CouchDBManager {
             db.getView(VIEW_BY_BLE_ADDRESS).setMap(new Mapper() {
                 @Override
                 public void map(Map<String, Object> document, Emitter emitter) {
-                        List<Map<String, Object>> scans = (List) document.get("bleScans");
-                        for (Map<String, Object> scan : scans) {
-                            emitter.emit(scan.get("address"), document);
-                        }
+                    List<Map<String, Object>> scans = (List) document.get("bleScans");
+                    for (Map<String, Object> scan : scans) {
+                        emitter.emit(scan.get("address"), document);
+                    }
 
                 }
             }, "1");
 
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-        catch (CouchbaseLiteException cle)
-        {
+        } catch (CouchbaseLiteException cle) {
             cle.printStackTrace();
         }
 
         // parsujeme URL adresu
         try {
-            serverURL = new URL(SettingsFactory.DB_URL);
-        }catch (MalformedURLException mue)
-        {
+            serverURL = new URL(C.DB_URL);
+        } catch (MalformedURLException mue) {
             mue.printStackTrace();
         }
     }
 
     /**
      * Ulozeni nekolika fingerprintu
+     *
      * @param fingerprints Seznam fingerprintu
      */
-    public void savePositions(List<Fingerprint> fingerprints)
-    {
-        for (Fingerprint p : fingerprints){
+    public void savePositions(List<Fingerprint> fingerprints) {
+        for (Fingerprint p : fingerprints) {
             Map<String, Object> properties = getMapOfDocument(p);
 
             Document doc = db.createDocument();
             try {
                 doc.putProperties(properties);
-            }
-            catch (CouchbaseLiteException cle)
-            {
+            } catch (CouchbaseLiteException cle) {
                 cle.printStackTrace();
             }
 
@@ -136,20 +132,18 @@ public class CouchDBManager {
 
     /**
      * Ulozi fingerprint
+     *
      * @param p fingerprint
      */
-    public void savePosition(Fingerprint p)
-    {
+    public void savePosition(Fingerprint p) {
         Map<String, Object> properties = getMapOfDocument(p);
 
-            Document doc = db.createDocument();
-            try {
-                doc.putProperties(properties);
-            }
-            catch (CouchbaseLiteException cle)
-            {
-                cle.printStackTrace();
-            }
+        Document doc = db.createDocument();
+        try {
+            doc.putProperties(properties);
+        } catch (CouchbaseLiteException cle) {
+            cle.printStackTrace();
+        }
 
 
     }
@@ -157,10 +151,8 @@ public class CouchDBManager {
     /**
      * Vymaze celou DB
      */
-    public void deleteAll()
-    {
-        try
-        {
+    public void deleteAll() {
+        try {
             db.delete();
             this.db = manager.getDatabase(DB_NAME); // Vybrani/vytvoreni DB
 
@@ -171,9 +163,8 @@ public class CouchDBManager {
             db.getView(VIEW_BY_MAC).setMap(new Mapper() {
                 @Override
                 public void map(Map<String, Object> document, Emitter emitter) {
-                    List<Map<String, Object>> scans = (List) document.get("scans");
-                    for (Map<String, Object> scan : scans)
-                    {
+                    List<Map<String, Object>> scans = (List) document.get("wifiScans");
+                    for (Map<String, Object> scan : scans) {
                         emitter.emit(scan.get("mac"), document);
                     }
                 }
@@ -189,42 +180,36 @@ public class CouchDBManager {
 
                 }
             }, "1");
-        }
-        catch (CouchbaseLiteException cle)
-        {
+        } catch (CouchbaseLiteException cle) {
             cle.printStackTrace();
         }
     }
 
     /**
      * Ziska vsehny fingerprinty, ktere maji danou MAC adresu zaznamenanou
+     *
      * @param mac Vyberova MAC adresa
      * @return Seznam vsech fingerprintu, kter mac obsahuji
      */
-    public List<Fingerprint> getFingerprintsByMac(String mac)
-    {
+    public List<Fingerprint> getFingerprintsByMac(String mac) {
         ArrayList<Fingerprint> fingerprints = new ArrayList<>();
         Query query = db.getView(VIEW_BY_MAC).createQuery();
 
         query.setStartKey(mac);
         query.setEndKey(mac);
 
-        try
-        {
+        try {
             QueryEnumerator result = query.run();
-            for (Iterator<QueryRow> it = result; it.hasNext(); )
-            {
+            for (Iterator<QueryRow> it = result; it.hasNext(); ) {
                 QueryRow row = it.next();
                 Document doc = row.getDocument();
 
-                Fingerprint p = getFingerprintFormDocument(doc);
+                Fingerprint p = getFingerprintFromDocument(doc);
                 if (p != null) {
                     fingerprints.add(p);
                 }
             }
-        }
-        catch (CouchbaseLiteException cle)
-        {
+        } catch (CouchbaseLiteException cle) {
             cle.printStackTrace();
         }
         return fingerprints;
@@ -232,37 +217,33 @@ public class CouchDBManager {
 
     /**
      * Ziska vsechny fingerprinty, ktere obsahuji dane MAC
+     *
      * @param macs pole MAC adres
      * @return Sezanm fingerprintu, ktere obsahuji MAC
      */
-    public List<Fingerprint> getFingerprintsByMacs(String[] macs)
-    {
+    public List<Fingerprint> getFingerprintsByMacs(String[] macs) {
         ArrayList<Fingerprint> fingerprints = new ArrayList<>();
         Query query = db.getView(VIEW_BY_MAC).createQuery();
 
         List<Object> objects = new ArrayList<>();
 
         for (int i = 0; i < macs.length; i++)
-            objects.add( (Object) macs[i]);
+            objects.add((Object) macs[i]);
 
         query.setKeys(objects);
 
-        try
-        {
+        try {
             QueryEnumerator result = query.run();
-            for (Iterator<QueryRow> it = result; it.hasNext(); )
-            {
+            for (Iterator<QueryRow> it = result; it.hasNext(); ) {
                 QueryRow row = it.next();
                 Document doc = row.getDocument();
 
-                Fingerprint p = getFingerprintFormDocument(doc);
+                Fingerprint p = getFingerprintFromDocument(doc);
                 if (p != null) {
                     fingerprints.add(p);
                 }
             }
-        }
-        catch (CouchbaseLiteException cle)
-        {
+        } catch (CouchbaseLiteException cle) {
             cle.printStackTrace();
         }
         return fingerprints;
@@ -270,11 +251,11 @@ public class CouchDBManager {
 
     /**
      * Ziska vsechny fingerprinty, ktere obsahuji adresy BLE zarizeni (BLE Address)
+     *
      * @param adresses Pole adres
      * @return Seznam vsech fingerprintu, ktere obsahuji dane adresy
      */
-    public List<Fingerprint> getPositionsByBleAddresses(String[] adresses)
-    {
+    public List<Fingerprint> getPositionsByBleAddresses(String[] adresses) {
         ArrayList<Fingerprint> fingerprints = new ArrayList<>();
 
         Query query = db.getView(VIEW_BY_BLE_ADDRESS).createQuery();
@@ -282,26 +263,22 @@ public class CouchDBManager {
         List<Object> objects = new ArrayList<>();
 
         for (int i = 0; i < adresses.length; i++)
-            objects.add( (Object) adresses[i]);
+            objects.add(adresses[i]);
 
         query.setKeys(objects);
 
-        try
-        {
+        try {
             QueryEnumerator result = query.run();
-            for (Iterator<QueryRow> it = result; it.hasNext(); )
-            {
+            for (Iterator<QueryRow> it = result; it.hasNext(); ) {
                 QueryRow row = it.next();
                 Document doc = row.getDocument();
 
-                Fingerprint p = getFingerprintFormDocument(doc);
+                Fingerprint p = getFingerprintFromDocument(doc);
                 if (p != null) {
                     fingerprints.add(p);
                 }
             }
-        }
-        catch (CouchbaseLiteException cle)
-        {
+        } catch (CouchbaseLiteException cle) {
             cle.printStackTrace();
         }
 
@@ -310,29 +287,26 @@ public class CouchDBManager {
 
     /**
      * Vytahne vsechny fingerprinty
+     *
      * @return seznam fingerprintu
      */
-    public List<Fingerprint> getAllFingerprints()
-    {
+    public List<Fingerprint> getAllFingerprints() {
         Query query = db.createAllDocumentsQuery();
         ArrayList<Fingerprint> fingerprints = new ArrayList<>();
 
         query.setAllDocsMode(Query.AllDocsMode.ALL_DOCS);
         try {
             QueryEnumerator result = query.run();
-            for (Iterator<QueryRow> it = result; it.hasNext(); )
-            {
+            for (Iterator<QueryRow> it = result; it.hasNext(); ) {
                 QueryRow row = it.next();
                 Document doc = row.getDocument();
 
-                Fingerprint p = getFingerprintFormDocument(doc);
+                Fingerprint p = getFingerprintFromDocument(doc);
                 if (p != null) {
                     fingerprints.add(p);
                 }
             }
-        }
-        catch (CouchbaseLiteException cle)
-        {
+        } catch (CouchbaseLiteException cle) {
             cle.printStackTrace();
         }
         return fingerprints;
@@ -341,27 +315,24 @@ public class CouchDBManager {
 
     /**
      * Odstrani fingerprint z DB
-      * @param id ID fingerprintu
+     *
+     * @param id ID fingerprintu
      */
-    public void removeFingerprint(String id)
-    {
+    public void removeFingerprint(String id) {
         Document doc = (Document) db.getDocument(id);
-        try
-        {
+        try {
             doc.delete();
-        }
-        catch (CouchbaseLiteException cle)
-        {
+        } catch (CouchbaseLiteException cle) {
             cle.printStackTrace();
         }
     }
 
     /**
      * Ziska aktualni cas dle kosntanty DATE_FORMAT
+     *
      * @return aktualni cas ve Stringu
      */
-    private String getCurrentTime()
-    {
+    private String getCurrentTime() {
         DateFormat df = new SimpleDateFormat(DATE_FORMAT);
         Date today = GregorianCalendar.getInstance().getTime();
 
@@ -370,18 +341,16 @@ public class CouchDBManager {
 
     /**
      * Prevede Stringovy format dle DATE_FORMAT na objekt tridy Date
+     *
      * @param date cas ve Stringu
      * @return cas v objektu tridy Date
      */
-    private Date getDate(String date)
-    {
+    private Date getDate(String date) {
         DateFormat df = new SimpleDateFormat(DATE_FORMAT);
         try {
             Date created = df.parse(date);
             return created;
-        }
-        catch (ParseException pe)
-        {
+        } catch (ParseException pe) {
             pe.printStackTrace();
         }
         return new Date();
@@ -389,6 +358,7 @@ public class CouchDBManager {
 
     /**
      * Vytvari mapu dokumetu pro ulozeni do DB
+     *
      * @param p Fingerprint, ktery chceme ulozit
      * @return Mapu objektu
      */
@@ -445,19 +415,19 @@ public class CouchDBManager {
 
         // pridani skenu...
         List<Map<String, Object>> scansArray = new ArrayList<>();
-        ArrayList<Scan> scans = p.getScans();
-        for (Scan s : scans)
-        {
+        ArrayList<WifiScan> wifiScans = p.getWifiScans();
+        for (WifiScan s : wifiScans) {
             Map<String, Object> scanProperties = new HashMap<>();
-            scanProperties.put("ssid",s.getSSID());
-            scanProperties.put("mac",s.getMAC());
-            scanProperties.put("rssi",s.getStrenght());
+            scanProperties.put("ssid", s.getSSID());
+            scanProperties.put("mac", s.getMAC());
+            scanProperties.put("rssi", s.getStrenght());
+            scanProperties.put("time", s.getTime());
 
             scansArray.add(scanProperties);
         }
+        properties.put("wifiScans", scansArray);
 
-        properties.put("scans",scansArray);
-
+        properties.put("supportsBLE", p.getSupportsBLE());
         // pridani bluetooth scanu
         List<Map<String, Object>> bleScansArray = new ArrayList<>();
         ArrayList<BleScan> bleScans = p.getBleScans();
@@ -466,19 +436,15 @@ public class CouchDBManager {
                 Map<String, Object> bleScanProperties = new HashMap<>();
                 bleScanProperties.put("address", s.getAddress());
                 bleScanProperties.put("rssi", s.getRssi());
-
+                bleScanProperties.put("time", s.getTime());
                 bleScanProperties.put("scanRecord", s.getScanRecord());
 
                 bleScansArray.add(bleScanProperties);
             }
-            properties.put("bleScans",bleScansArray);
+            properties.put("bleScans", bleScansArray);
+        } else {
+            properties.put("bleScans", "[]");
         }
-        else
-        {
-            properties.put("bleScans","[]");
-        }
-
-
 
 
         return properties;
@@ -486,11 +452,11 @@ public class CouchDBManager {
 
     /**
      * Vytvori fingerprint z DB dokumentu
+     *
      * @param doc Mapa dokumentu
      * @return Instanci tridy Fingerprint naplnenou daty
      */
-    private Fingerprint getFingerprintFormDocument(Document doc)
-    {
+    private Fingerprint getFingerprintFromDocument(Document doc) {
 
         try {
             Fingerprint p = new Fingerprint();
@@ -544,18 +510,20 @@ public class CouchDBManager {
 
             // Parsovani skenu... We need to go deeper... List<Map<String, Object>>
 
-            List<Map<String, Object>> scans = (List) doc.getProperty("scans");
+            List<Map<String, Object>> scans = (List) doc.getProperty("wifiScans");
             for (Map<String, Object> scan : scans) {
-                Scan s = new Scan();
+                WifiScan s = new WifiScan();
 
                 s.setMAC(scan.get("mac").toString());
                 s.setSSID(scan.get("ssid").toString());
                 s.setStrentgh(Integer.parseInt(scan.get("rssi").toString()));
+                s.setTime(Long.parseLong(scan.get("time").toString()));
 
                 p.addScan(s);
             }
 
-            // parsovanui bleScanu
+            p.setSupportsBLE(Boolean.valueOf(parseProperty("supportsBLE", doc)));
+            // parsovani bleScanu
             if (doc.getProperty("bleScans") != null) { // Pokud neni null
                 if (!doc.getProperty("bleScans").equals("[]")) { // nebo nebyly zaznamenany vysilace
                     List<Map<String, Object>> bleScans = (List) doc.getProperty("bleScans");
@@ -564,6 +532,7 @@ public class CouchDBManager {
 
                         bleScan.setAddress(scan.get("address").toString());
                         bleScan.setRssi(Integer.parseInt(scan.get("rssi").toString()));
+                        bleScan.setTime(Long.parseLong(scan.get("time").toString()));
 
                         List<Byte> scanRecordList = (List) doc.getProperty("scanRecord") == null ? new ArrayList<>() : (List) doc.getProperty("scanRecord");
                         byte[] scanRecord = new byte[scanRecordList.size()];
@@ -588,15 +557,14 @@ public class CouchDBManager {
 
     /**
      * Couchabse ma trochu jine chapani nuly/null.
+     *
      * @param property Vlastnost na parsovani
-     * @param doc Dokument
+     * @param doc      Dokument
      * @return Hodnotu vlastnosti ve Stringu
      */
-    private String parseProperty(String property, Document doc)
-    {
+    private String parseProperty(String property, Document doc) {
         Object o = doc.getProperty(property); // V chapani JSON muze byt null !!
-        if (o == null)
-        {
+        if (o == null) {
             return "0";
         }
         return o.toString();
@@ -605,18 +573,17 @@ public class CouchDBManager {
     /**
      * Uzavre spojeni
      */
-    public void closeConnection()
-    {
+    public void closeConnection() {
         db.close();
         manager.close();
     }
 
     /**
      * Stahne DB ze serveru na klienta
+     *
      * @param context context
      */
-    public void downloadDBFromServer(Context context)
-    {
+    public void downloadDBFromServer(Context context) {
         final Replication pull = db.createPullReplication(serverURL);
 
         final ProgressDialog pd = ProgressDialog.show(context, "Wait....", "Sync in progess", false);
@@ -624,12 +591,9 @@ public class CouchDBManager {
             @Override
             public void changed(Replication.ChangeEvent changeEvent) {
                 boolean active = pull.getStatus() == Replication.ReplicationStatus.REPLICATION_ACTIVE;
-                if (!active)
-                {
+                if (!active) {
                     pd.dismiss();
-                }
-                else
-                {
+                } else {
                     int total = pull.getCompletedChangesCount();
                     pd.setMax(total);
                     pd.setProgress(pull.getChangesCount());
@@ -643,10 +607,10 @@ public class CouchDBManager {
 
     /**
      * Nahraje klientovu DB na server.
+     *
      * @param context Context
      */
-    public void uploadDBToServer(Context context)
-    {
+    public void uploadDBToServer(Context context) {
         final Replication push = db.createPushReplication(serverURL);
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -660,19 +624,16 @@ public class CouchDBManager {
         cal.add(Calendar.DATE, dayToAdd);
         Date expires = cal.getTime();
 
-        push.setCookie(cookieName,sessionId, "/", expires, false, false);
+        push.setCookie(cookieName, sessionId, "/", expires, false, false);
 
-        final ProgressDialog pd = ProgressDialog.show(context, "Wait....", "Sync in progess", false);
+        final ProgressDialog pd = ProgressDialog.show(context, context.getString(R.string.wait), context.getString(R.string.sync_progress), false);
         push.addChangeListener(new Replication.ChangeListener() {
             @Override
             public void changed(Replication.ChangeEvent changeEvent) {
                 boolean active = push.getStatus() == Replication.ReplicationStatus.REPLICATION_ACTIVE;
-                if (!active)
-                {
+                if (!active) {
                     pd.dismiss();
-                }
-                else
-                {
+                } else {
                     int total = push.getCompletedChangesCount();
                     pd.setMax(total);
                     pd.setProgress(push.getChangesCount());
@@ -680,24 +641,22 @@ public class CouchDBManager {
             }
         });
         push.start();
-
-        System.out.println("Sync Up");
-
+        Log.d(getClass().getName(), "Uploading DB to server");
     }
 
     /**
      * Ziska fingerprint na zaklade ID
+     *
      * @param id ID fingerprintu
      * @return Fingerprint s ID
      */
-    public Fingerprint getFingerprintById(String id)
-    {
+    public Fingerprint getFingerprintById(String id) {
         Document doc = db.getDocument(id);
-        Fingerprint p = getFingerprintFormDocument(doc);
+        Fingerprint p = getFingerprintFromDocument(doc);
         return p;
     }
 
-    public boolean existDB(){
+    public boolean existDB() {
         if (db.exists())
             return true;
         else

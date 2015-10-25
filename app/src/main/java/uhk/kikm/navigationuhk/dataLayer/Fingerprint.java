@@ -8,47 +8,45 @@ import java.util.Date;
  * Dominik Matoulek 2015
  */
 public class Fingerprint {
-
     // couchDB identificator
     String id;
-
     String level;
 
     int x;
     int y;
-    String description;
-    ArrayList<Scan> scans;
+    String description = "";
+    ArrayList<WifiScan> wifiScans = new ArrayList<>();
 
-    ArrayList<BleScan> bleScans;
+    ArrayList<BleScan> bleScans = new ArrayList<>();
 
     // other recorded stuff...
     private float accX, accY, accZ, gyroX, gyroY, gyroZ, magX, magY, magZ;
     private String board, bootloader, brand, device, display, fingerprint, hardware, host, osId, manufacturer, model, product, serial, tags, type, user;
-
+    private boolean supportsBLE;
     private String deviceID; // IMEI...
 
-    private Float lat,lon;
+    private Float lat, lon;
 
     Date createdDate;
 
     public Fingerprint() {
-        scans = new ArrayList<>();
-        bleScans = new ArrayList<>();
-        description = "";
     }
 
-    public void addScan(Scan s)
-    {
-        scans.add(s);
+    public Fingerprint(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public void addBleScan(BleScan s)
-    {
+    public void addScan(WifiScan s) {
+        wifiScans.add(s);
+    }
+
+    public void addBleScan(BleScan s) {
         bleScans.add(s);
     }
 
-    public ArrayList<Scan> getScans() {
-        return scans;
+    public ArrayList<WifiScan> getWifiScans() {
+        return wifiScans;
     }
 
     public int getX() {
@@ -100,9 +98,8 @@ public class Fingerprint {
         this.createdDate = createdDate;
     }
 
-    public Scan getScan(int index)
-    {
-        return scans.get(index);
+    public WifiScan getScan(int index) {
+        return wifiScans.get(index);
     }
 
     public float getAccX() {
@@ -337,7 +334,8 @@ public class Fingerprint {
                 ", x=" + x +
                 ", y=" + y +
                 ", description='" + description + '\'' +
-                ", scans=" + scans +
+                ", wifiScans=" + wifiScans +
+                ", supportsBLE=" + supportsBLE +
                 ", bleScans=" + bleScans +
                 ", accX=" + accX +
                 ", accY=" + accY +
@@ -371,6 +369,10 @@ public class Fingerprint {
                 '}';
     }
 
+    public void setWifiScans(ArrayList<WifiScan> wifiScans) {
+        this.wifiScans = wifiScans;
+    }
+
     public ArrayList<BleScan> getBleScans() {
         return bleScans;
     }
@@ -379,4 +381,11 @@ public class Fingerprint {
         this.bleScans = bleScans;
     }
 
+    public boolean getSupportsBLE() {
+        return supportsBLE;
+    }
+
+    public void setSupportsBLE(boolean supportsBLE) {
+        this.supportsBLE = supportsBLE;
+    }
 }

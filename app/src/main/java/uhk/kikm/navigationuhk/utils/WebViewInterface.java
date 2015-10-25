@@ -17,7 +17,7 @@ public class WebViewInterface {
 
     /**
      * Inicializuje WebViewInterface
-     * @param context
+     * @param context Context
      */
     public WebViewInterface(Context context) {
         this.context = context;
@@ -28,8 +28,6 @@ public class WebViewInterface {
     {
         this.x = x;
         this.y = y;
-
-        System.out.println(x + " " + y);
 
         changed = true;
     }
