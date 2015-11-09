@@ -1,0 +1,47 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".MainActivity">
+    <item
+        android:id="@+id/action_level_1"
+        android:title="Patro 1"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_level_2"
+        android:title="Patro 2"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_level_3"
+        android:title="Patro 3"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_level_4"
+        android:title="Patro 4"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="100"
+        android:title="@string/action_list"
+        app:showAsAction="never"/>
+    <!--
+    <item
+        android:id="@+id/action_find"
+        android:orderInCategory="100"
+        android:title="@string/find"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_find_ble"
+        android:orderInCategory="100"
+        android:title="@string/find_ble"
+        app:showAsAction="never"/>
+        -->
+</menu>

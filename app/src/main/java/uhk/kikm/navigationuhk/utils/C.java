@@ -1,6 +1,6 @@
 package uhk.kikm.navigationuhk.utils;
 
-import uhk.kikm.navigationuhk.utils.LocalizationService.LocalizationServicePoint;
+import uhk.kikm.navigationuhk.utils.localization.LocalizationServicePoint;
 
 /**
  * Trida obsahujici Configuracni a Constantni hodnoty
@@ -10,6 +10,7 @@ import uhk.kikm.navigationuhk.utils.LocalizationService.LocalizationServicePoint
 public class C {
     public static final String LOG_BLESCAN = "BLE Scan";
     public static final String LOG_WIFISCAN = "Wifi Scan";
+    public static final String LOG_CELLSCAN = "GSM Scan";
 
     public static LocalizationServicePoint pointA = new LocalizationServicePoint(34, 31, new Float(50.2045875), new Float(15.8290822));
     public static LocalizationServicePoint pointB = new LocalizationServicePoint(642, 39, new Float(50.2045247), new Float(15.8297047));
@@ -21,5 +22,15 @@ public class C {
     /**
      * Jak dlouho ma probihat skenovani pri sberu dat
      */
-    public static int SCAN_TIME = 10000;
+    public static int SCAN_COLLECTOR_TIME = 10000;
+
+    /**
+     * Po jak dlouhe dobe se maji znovu ulozit dostupne BTSky
+     */
+    public static int SCAN_TICK_GSM = 1000;
+
+    /**
+     * Jak dlouho ma byt skenovano pri hledani
+     */
+    public static int SCAN_FINDER_TIME = 5000;
 }

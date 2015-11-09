@@ -13,6 +13,8 @@
     <string name="insufficient_wifi_data">Nedostatek Wifi dat</string>
     <string name="wait">Čekejte&#8230;</string>
     <string name="sync_progress">Probíhá synchronizace&#8230;</string>
+    <string name="yes">Ano</string>
+    <string name="no">Ne</string>
 
     <string name="title_activity_position_info">Informace</string>
     <string name="title_activity_login">Přihlášení uživatele</string>
@@ -36,4 +38,9 @@
 
     <string name="collector_dialog_title">Skenuji… ani se nehni!</string>
     <string name="collector_coordinates_change">Musi byt jine souradnice</string>
+
+    <string name="enableBT_dialog_title">BlueTooth vypnut</string>
+    <string name="enableBT_dialog_message">BT je vypnut.\n\nPřejete si ho zapnout?</string>
+    <string name="enableBT_error">Chyba při zapínání BT</string>
+    <string name="enableWiFi_error">Chyba při zapínání WiFi</string>
 </resources>

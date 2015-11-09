@@ -1,4 +1,4 @@
-package uhk.kikm.navigationuhk.utils.LocalizationService;
+package uhk.kikm.navigationuhk.utils.localization;
 
 import uhk.kikm.navigationuhk.dataLayer.Fingerprint;
 

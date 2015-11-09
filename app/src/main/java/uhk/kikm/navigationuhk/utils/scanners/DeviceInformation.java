@@ -1,4 +1,4 @@
-package uhk.kikm.navigationuhk.utils;
+package uhk.kikm.navigationuhk.utils.scanners;
 
 import android.content.Context;
 import android.content.pm.PackageManager;

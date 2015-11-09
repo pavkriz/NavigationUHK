@@ -15,6 +15,7 @@ import uhk.kikm.navigationuhk.dataLayer.Fingerprint;
 public class SensorScanner {
 
     private SensorEventListener sensorEventListener;
+    private SensorManager sensorManager;
 
     private float accX, accY, accZ, gyroX, gyroY, gyroZ, magX, magY, magZ;
 
@@ -23,12 +24,8 @@ public class SensorScanner {
      * @param context context
      */
     public SensorScanner(Context context) {
-        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-
+        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         initListeners();
-        sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     /**
@@ -69,6 +66,15 @@ public class SensorScanner {
         };
     }
 
+    public void startScan(){
+        sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(sensorEventListener, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_FASTEST);
+    }
+
+    public void stopScan(){
+        sensorManager.unregisterListener(sensorEventListener);
+    }
     /**
      * Naplni fingerprint daty ze senzoru
      * @param p Fingerprint k naplneni

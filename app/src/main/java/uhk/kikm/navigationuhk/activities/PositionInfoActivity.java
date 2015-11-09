@@ -3,9 +3,8 @@ package uhk.kikm.navigationuhk.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,7 +37,7 @@ public class PositionInfoActivity extends ActionBarActivity {
         fingerprint = dbManager.getFingerprintById(id);
 
         TextView textView = (TextView) findViewById(R.id.textView);
-
+        //textView.setMovementMethod(new ScrollingMovementMethod());
         textView.setText(fingerprint.toString());
 
 

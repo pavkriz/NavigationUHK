@@ -228,7 +228,7 @@ public class CouchDBManager {
         List<Object> objects = new ArrayList<>();
 
         for (int i = 0; i < macs.length; i++)
-            objects.add((Object) macs[i]);
+            objects.add(macs[i]);
 
         query.setKeys(objects);
 
@@ -319,7 +319,7 @@ public class CouchDBManager {
      * @param id ID fingerprintu
      */
     public void removeFingerprint(String id) {
-        Document doc = (Document) db.getDocument(id);
+        Document doc = db.getDocument(id);
         try {
             doc.delete();
         } catch (CouchbaseLiteException cle) {
@@ -415,7 +415,7 @@ public class CouchDBManager {
 
         // pridani skenu...
         List<Map<String, Object>> scansArray = new ArrayList<>();
-        ArrayList<WifiScan> wifiScans = p.getWifiScans();
+        List<WifiScan> wifiScans = p.getWifiScans();
         for (WifiScan s : wifiScans) {
             Map<String, Object> scanProperties = new HashMap<>();
             scanProperties.put("ssid", s.getSSID());
@@ -427,10 +427,25 @@ public class CouchDBManager {
         }
         properties.put("wifiScans", scansArray);
 
+        List<Map<String, Object>> cellScansArray = new ArrayList<>();
+        List<CellScan> cellScans = p.getCellScans();
+        for (CellScan s : cellScans) {
+            Map<String, Object> scanProperties = new HashMap<>();
+            scanProperties.put("cid", s.getCid());
+            scanProperties.put("lac", s.getLac());
+            scanProperties.put("psc", s.getPsc());
+            scanProperties.put("time", s.getTime());
+            scanProperties.put("type", s.getType());
+            scanProperties.put("rssi", s.getRssi());
+
+            cellScansArray.add(scanProperties);
+        }
+        properties.put("cellScans", cellScansArray);
+
         properties.put("supportsBLE", p.getSupportsBLE());
         // pridani bluetooth scanu
         List<Map<String, Object>> bleScansArray = new ArrayList<>();
-        ArrayList<BleScan> bleScans = p.getBleScans();
+        List<BleScan> bleScans = p.getBleScans();
         if (bleScans != null) {
             for (BleScan s : bleScans) {
                 Map<String, Object> bleScanProperties = new HashMap<>();
@@ -522,6 +537,20 @@ public class CouchDBManager {
                 p.addScan(s);
             }
 
+            List<Map<String, Object>> cellScans = (List) doc.getProperty("cellScans");
+            for (Map<String, Object> scan : cellScans) {
+                CellScan s = new CellScan();
+
+                s.setCid(Integer.parseInt(scan.get("cid").toString()));
+                s.setLac(Integer.parseInt(scan.get("lac").toString()));
+                s.setPsc(Integer.parseInt(scan.get("psc").toString()));
+                s.setTime(Long.parseLong(scan.get("time").toString()));
+                s.setType(Integer.parseInt(scan.get("type").toString()));
+                s.setRssi(Integer.parseInt(scan.get("rssi").toString()));
+
+                p.addCellScan(s);
+            }
+
             p.setSupportsBLE(Boolean.valueOf(parseProperty("supportsBLE", doc)));
             // parsovani bleScanu
             if (doc.getProperty("bleScans") != null) { // Pokud neni null
@@ -534,7 +563,7 @@ public class CouchDBManager {
                         bleScan.setRssi(Integer.parseInt(scan.get("rssi").toString()));
                         bleScan.setTime(Long.parseLong(scan.get("time").toString()));
 
-                        List<Byte> scanRecordList = (List) doc.getProperty("scanRecord") == null ? new ArrayList<>() : (List) doc.getProperty("scanRecord");
+                        List<Byte> scanRecordList = doc.getProperty("scanRecord") == null ? new ArrayList<>() : (List) doc.getProperty("scanRecord");
                         byte[] scanRecord = new byte[scanRecordList.size()];
 
                         for (int i = 0; i < scanRecordList.size(); i++) {
@@ -656,11 +685,8 @@ public class CouchDBManager {
         return p;
     }
 
-    public boolean existDB() {
-        if (db.exists())
-            return true;
-        else
-            return false;
+    public boolean existsDB() {
+        return db.exists();
     }
 
 }

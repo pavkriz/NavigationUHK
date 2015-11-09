@@ -1,4 +1,4 @@
-package uhk.kikm.navigationuhk.utils.LocalizationService;
+package uhk.kikm.navigationuhk.utils.localization;
 
 /**
  * Datova trida urcena pro lokalizacni body pouzite v LocalizationService

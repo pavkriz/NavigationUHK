@@ -2,6 +2,7 @@ package uhk.kikm.navigationuhk.dataLayer;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Modelova trida reprezentujici fingerprint
@@ -15,9 +16,9 @@ public class Fingerprint {
     int x;
     int y;
     String description = "";
-    ArrayList<WifiScan> wifiScans = new ArrayList<>();
-
-    ArrayList<BleScan> bleScans = new ArrayList<>();
+    List<WifiScan> wifiScans = new ArrayList<>();
+    List<BleScan> bleScans = new ArrayList<>();
+    List<CellScan> cellScans = new ArrayList<>();
 
     // other recorded stuff...
     private float accX, accY, accZ, gyroX, gyroY, gyroZ, magX, magY, magZ;
@@ -45,7 +46,11 @@ public class Fingerprint {
         bleScans.add(s);
     }
 
-    public ArrayList<WifiScan> getWifiScans() {
+    public void addCellScan(CellScan s){
+        cellScans.add(s);
+    }
+
+    public List<WifiScan> getWifiScans() {
         return wifiScans;
     }
 
@@ -335,6 +340,7 @@ public class Fingerprint {
                 ", y=" + y +
                 ", description='" + description + '\'' +
                 ", wifiScans=" + wifiScans +
+                ", cellScans=" + cellScans +
                 ", supportsBLE=" + supportsBLE +
                 ", bleScans=" + bleScans +
                 ", accX=" + accX +
@@ -369,15 +375,15 @@ public class Fingerprint {
                 '}';
     }
 
-    public void setWifiScans(ArrayList<WifiScan> wifiScans) {
+    public void setWifiScans(List<WifiScan> wifiScans) {
         this.wifiScans = wifiScans;
     }
 
-    public ArrayList<BleScan> getBleScans() {
+    public List<BleScan> getBleScans() {
         return bleScans;
     }
 
-    public void setBleScans(ArrayList<BleScan> bleScans) {
+    public void setBleScans(List<BleScan> bleScans) {
         this.bleScans = bleScans;
     }
 
@@ -387,5 +393,13 @@ public class Fingerprint {
 
     public void setSupportsBLE(boolean supportsBLE) {
         this.supportsBLE = supportsBLE;
+    }
+
+    public List<CellScan> getCellScans() {
+        return cellScans;
+    }
+
+    public void setCellScans(List<CellScan> cellScans) {
+        this.cellScans = cellScans;
     }
 }

@@ -3,9 +3,9 @@ package uhk.kikm.navigationuhk.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
@@ -13,7 +13,7 @@ import android.webkit.WebViewClient;
 
 import uhk.kikm.navigationuhk.R;
 import uhk.kikm.navigationuhk.utils.C;
-import uhk.kikm.navigationuhk.utils.LoginWebViewInterface;
+import uhk.kikm.navigationuhk.utils.webview.LoginWebViewInterface;
 
 /**
  * Aktivita zajistujici prihlasovani uzivatelu
@@ -80,7 +80,7 @@ public class LoginActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, CollectorActivity.class); //TODO nezapomenout smazat a nechat jen return
+            Intent intent = new Intent(this, CollectorActivity.class); //TODO zde odstranit obchazeni prihlaseni, nechat jen return
             startActivity(intent);
             return true;
         }

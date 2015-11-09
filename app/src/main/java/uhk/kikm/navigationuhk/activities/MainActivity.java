@@ -2,9 +2,8 @@ package uhk.kikm.navigationuhk.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.net.wifi.ScanResult;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
@@ -18,10 +17,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uhk.kikm.navigationuhk.R;
+import uhk.kikm.navigationuhk.dataLayer.BleScan;
+import uhk.kikm.navigationuhk.dataLayer.CellScan;
 import uhk.kikm.navigationuhk.dataLayer.CouchDBManager;
 import uhk.kikm.navigationuhk.dataLayer.Fingerprint;
-import uhk.kikm.navigationuhk.utils.WifiFinder;
-import uhk.kikm.navigationuhk.utils.scanners.WifiScanner;
+import uhk.kikm.navigationuhk.dataLayer.WifiScan;
+import uhk.kikm.navigationuhk.utils.C;
+import uhk.kikm.navigationuhk.utils.finders.WifiFinder;
+import uhk.kikm.navigationuhk.utils.scanners.ScanResultListener;
+import uhk.kikm.navigationuhk.utils.scanners.Scanner;
 
 /**
  * Odlehcena verze CollectorActivity urcena pouze ke hledani
@@ -31,7 +35,7 @@ public class MainActivity extends ActionBarActivity {
 
     WebView view;
     CouchDBManager dbManager;
-    WifiScanner wifiScanner;
+    Scanner scanner;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -51,8 +55,7 @@ public class MainActivity extends ActionBarActivity {
         view.loadData(readTextFromResource(R.drawable.uhk_j_2_level), null, "UTF-8"); // nacteni souboru do prohlizece
         Toast.makeText(this, getString(R.string.title_level2), Toast.LENGTH_SHORT).show();
 
-        wifiScanner = new WifiScanner(this);
-        wifiScanner.startScan(false);
+        scanner = new Scanner(this);
     }
 
 
@@ -67,6 +70,12 @@ public class MainActivity extends ActionBarActivity {
     protected void onRestart() {
         dbManager = new CouchDBManager(this);
         super.onRestart();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        scanner.stopScan();
     }
 
     @Override
@@ -86,28 +95,22 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_find) {
             Toast.makeText(this, R.string.searching, Toast.LENGTH_SHORT).show();
             findPosition();
-        }
-        else if (id == R.id.action_level_1) {
+        } else if (id == R.id.action_level_1) {
             Toast.makeText(this, getString(R.string.title_level1), Toast.LENGTH_SHORT).show();
             changeLevel(1);
-        }
-        else if (id == R.id.action_level_2) {
+        } else if (id == R.id.action_level_2) {
             Toast.makeText(this, getString(R.string.title_level2), Toast.LENGTH_SHORT).show();
             changeLevel(2);
-        }
-        else if (id == R.id.action_level_3) {
+        } else if (id == R.id.action_level_3) {
             Toast.makeText(this, getString(R.string.title_level3), Toast.LENGTH_SHORT).show();
             changeLevel(3);
-        }
-        else if (id == R.id.action_level_4) {
+        } else if (id == R.id.action_level_4) {
             Toast.makeText(this, getString(R.string.title_level4), Toast.LENGTH_SHORT).show();
             changeLevel(4);
-        }
-        else if (id == R.id.action_download) {
+        } else if (id == R.id.action_download) {
             Toast.makeText(this, R.string.downloading, Toast.LENGTH_SHORT).show();
             downloadDB();
-        }
-        else if (id == R.id.action_change_mode) {
+        } else if (id == R.id.action_change_mode) {
             runCollectorActivity();
         }
 
@@ -117,12 +120,12 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * Zobrazi bod na mape o urcite barve, ktera je vyhodnocena z patra porizeni
-     * @param x x bodu
-     * @param y y bodu
+     *
+     * @param x     x bodu
+     * @param y     y bodu
      * @param level cislo patra
      */
-    private void showPoint(int x, int y, String level)
-    {
+    private void showPoint(int x, int y, String level) {
         switch (level) {
             case "J1NP":
                 view.loadUrl("javascript:setPoint(" + String.valueOf(x) + ", " + String.valueOf(y) + ", \"red\"" + ")");
@@ -148,35 +151,33 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
-     * Vyhledava pozici - detailnejsi popis je u CollectorActivity
+     * Vyhledava pozici
      */
     private void findPosition() {
-        if (!dbManager.existDB()) // pokud DB neexstuje, je nutne stahnout data
+        if (!dbManager.existsDB()) // pokud DB neexstuje, je nutne stahnout data
             Toast.makeText(this, R.string.db_needed, Toast.LENGTH_SHORT).show();
-        else
-        {
-            wifiScanner.startScan(false);
-            List<ScanResult> scanResults = wifiScanner.getScans();
-
-            ArrayList<Fingerprint> fingerprints = new ArrayList<>();
-
-            for (ScanResult s : scanResults)
-            {
-                String[] mac = new String[] {s.BSSID};
-                List<Fingerprint> pos = dbManager.getFingerprintsByMacs(mac);
-
-                fingerprints.addAll(pos);
-            }
-
-            if (fingerprints.size() > 0)
-            {
-                WifiFinder finder = new WifiFinder(fingerprints);
-                Fingerprint possibleFingerprint = finder.computePossibleFingerprint(scanResults);
-
-                showPoint(possibleFingerprint.getX(), possibleFingerprint.getY(), possibleFingerprint.getLevel());
-            }
-            else
-                Toast.makeText(this , R.string.insufficient_wifi_data, Toast.LENGTH_SHORT).show();
+        else {
+            scanner.startScan(C.SCAN_FINDER_TIME, true, false, false, new ScanResultListener() {
+                @Override
+                public void onScanFinished(final List<WifiScan> wifiScans, List<BleScan> bleScans, List<CellScan> cellScans) {
+                    final List<Fingerprint> fingerprints = new ArrayList<>();
+                    for (WifiScan s : wifiScans) {
+                        String[] mac = new String[]{s.getSSID()};
+                        fingerprints.addAll(dbManager.getFingerprintsByMacs(mac));
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (fingerprints.size() > 0) {
+                                Fingerprint possibleFingerprint = new WifiFinder(fingerprints).computePossibleFingerprint(wifiScans);
+                                showPoint(possibleFingerprint.getX(), possibleFingerprint.getY(), possibleFingerprint.getLevel());
+                            } else {
+                                Toast.makeText(MainActivity.this, R.string.insufficient_wifi_data, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -186,6 +187,7 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * Reloaduje obrazek patra
+     *
      * @param level cislo patra
      */
     private void changeLevel(int level) {
@@ -212,26 +214,22 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * Metoda na nacteni textu z nejakeho souboru.
+     *
      * @param resourceID ID zdroje
      * @return String text
      */
-    private String readTextFromResource(int resourceID)
-    {
+    private String readTextFromResource(int resourceID) {
         InputStream raw = getResources().openRawResource(resourceID);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         int i;
-        try
-        {
+        try {
             i = raw.read();
-            while (i != -1)
-            {
+            while (i != -1) {
                 stream.write(i);
                 i = raw.read();
             }
             raw.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return stream.toString();

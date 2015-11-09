@@ -1,4 +1,4 @@
-package uhk.kikm.navigationuhk.utils;
+package uhk.kikm.navigationuhk.utils.webview;
 
 import android.util.Log;
 import android.webkit.JavascriptInterface;

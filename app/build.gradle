@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "uhk.kikm.navigationuhk"
-        minSdkVersion 21
+        minSdkVersion 18
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -31,4 +31,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.couchbase.lite:couchbase-lite-android:1.1.0'
     compile 'com.android.support:support-v4:21.0.3'
+    compile 'org.altbeacon:android-beacon-library:2+'
 }

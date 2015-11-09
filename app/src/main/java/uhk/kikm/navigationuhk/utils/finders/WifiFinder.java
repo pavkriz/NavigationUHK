@@ -1,6 +1,4 @@
-package uhk.kikm.navigationuhk.utils;
-
-import android.net.wifi.ScanResult;
+package uhk.kikm.navigationuhk.utils.finders;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +14,7 @@ import uhk.kikm.navigationuhk.dataLayer.WifiScan;
  * Dominik Matoulek 2015
  */
 public class WifiFinder {
-    private ArrayList<Fingerprint> fingerprints;
+    private List<Fingerprint> fingerprints;
     private HashMap<String, Fingerprint> navigationData;
     private HashMap<WifiScan, Fingerprint> positionsOfScans;
     private HashMap<Float, Fingerprint> computedDistance;
@@ -27,7 +25,7 @@ public class WifiFinder {
      * Vytvari novou instaci WifiFinderu
      * @param fingerprints Fingreprinty, ktere maji byt pouzity k urceni polohy
      */
-    public WifiFinder(ArrayList<Fingerprint> fingerprints) {
+    public WifiFinder(List<Fingerprint> fingerprints) {
 
         navigationData = new HashMap<>();
         positionsOfScans = new HashMap<>();
@@ -47,10 +45,10 @@ public class WifiFinder {
 
     /**
      * Vypocita moznou pozici zarizeni. Je pozivan algorimus kNN a k = 3
-     * @param scansForIdentify Seznam aktualnich scanu z WifiManageru
+     * @param scansToIdentify Seznam aktualnich scanu z WifiManageru
      * @return "umely fingerprint" obsahujici pouze pozici a patro
      */
-    public Fingerprint computePossibleFingerprint(List<ScanResult> scansForIdentify) {
+    public Fingerprint computePossibleFingerprint(List<WifiScan> scansToIdentify) {
 
         float distance = 0;
 
@@ -59,24 +57,24 @@ public class WifiFinder {
         for (Fingerprint p : fingerprints)
         {
 
-            if (p.getWifiScans().size() < scansForIdentify.size()) {
-                for (ScanResult s : scansForIdentify) {
-                    int index = containsMAC(s.BSSID, p);
+            if (p.getWifiScans().size() < scansToIdentify.size()) {
+                for (WifiScan s : scansToIdentify) {
+                    int index = containsMAC(s.getMAC(), p);
 
                     if (index >= 0) {
-                        distance += Math.pow(p.getScan(index).getStrenght() + s.level, 2);
+                        distance += Math.pow(p.getScan(index).getStrenght() + s.getStrenght(), 2);
                     }
                     else if (index == -1)
                     {
-                        distance += Math.pow(SIGNAL_NO_RECIEVED + s.level, 2);
+                        distance += Math.pow(SIGNAL_NO_RECIEVED + s.getStrenght(), 2);
                     }
                 }
             } else {
                 for (WifiScan s : p.getWifiScans()) {
-                    int index = containsMAC(s.getMAC(), scansForIdentify);
+                    int index = containsMAC(s.getMAC(), scansToIdentify);
 
                     if (index >= 0) {
-                        distance += Math.pow(scansForIdentify.get(index).level + s.getStrenght(), 2);
+                        distance += Math.pow(scansToIdentify.get(index).getStrenght() + s.getStrenght(), 2);
                     } else if (index == -1) {
                         distance += Math.pow(SIGNAL_NO_RECIEVED + s.getStrenght(), 2);
                     }
@@ -147,11 +145,11 @@ public class WifiFinder {
      * @param scans seznam ScanResultu
      * @return Index zaznamenane MAC, pokud neni nalezena, vraci -1
      */
-    private int containsMAC(String s, List<ScanResult> scans)
+    private int containsMAC(String s, List<WifiScan> scans)
     {
         for(int i = 0; i < scans.size(); i++)
         {
-            if (s.equals(scans.get(i).BSSID))
+            if (s.equals(scans.get(i).getMAC()))
             {
                 return i;
             }
@@ -159,11 +157,11 @@ public class WifiFinder {
         return -1;
     }
 
-    public ArrayList<Fingerprint> getFingerprints() {
+    public List<Fingerprint> getFingerprints() {
         return fingerprints;
     }
 
-    public void setFingerprints(ArrayList<Fingerprint> fingerprints) {
+    public void setFingerprints(List<Fingerprint> fingerprints) {
         this.fingerprints = fingerprints;
     }
 

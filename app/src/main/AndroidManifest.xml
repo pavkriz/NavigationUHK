@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="uhk.kikm.navigationuhk"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    package="uhk.kikm.navigationuhk"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -10,6 +11,9 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_UPDATES"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <uses-feature
         android:name="android.hardware.wifi"
@@ -25,6 +29,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.CollectorActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_collector_mode">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -32,6 +37,7 @@
         </activity>
         <activity
             android:name=".activities.ListPositionsActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_list_positions"
             android:noHistory="true"
             android:parentActivityName=".activities.CollectorActivity">
@@ -41,6 +47,7 @@
         </activity>
         <activity
             android:name=".activities.PositionInfoActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_position_info"
             android:noHistory="true"
             android:parentActivityName=".activities.ListPositionsActivity">
@@ -50,6 +57,7 @@
         </activity>
         <activity
             android:name=".activities.SettingsActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_settings"
             android:noHistory="true"
             android:parentActivityName=".activities.CollectorActivity">
@@ -59,6 +67,7 @@
         </activity>
         <activity
             android:name=".activities.LoginActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_login"
             android:noHistory="true"
             android:parentActivityName=".activities.CollectorActivity">
@@ -68,6 +77,7 @@
         </activity>
         <activity
             android:name=".activities.MainActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_primary">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

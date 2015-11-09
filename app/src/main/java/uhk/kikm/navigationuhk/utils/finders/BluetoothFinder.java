@@ -1,4 +1,4 @@
-package uhk.kikm.navigationuhk.utils;
+package uhk.kikm.navigationuhk.utils.finders;
 
 import java.util.ArrayList;
 import java.util.Collections;
