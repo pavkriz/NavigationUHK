@@ -280,9 +280,9 @@ public class Scanner {
         BleScan bleScan = new BleScan();
         bleScan.setAddress(scan.getBluetoothAddress());
         bleScan.setRssi(scan.getRssi());
-//        bleScan.setScanRecord(beaconManager.getBeaconParsers().get(0).getBeaconAdvertisementData(scan));
-//        bleScan.setScanRecord(scan.getgetScanRecord().getBytes());
-
+        bleScan.setUuid(scan.getId1().toString());
+        bleScan.setMajor(scan.getId2().toInt());
+        bleScan.setMinor(scan.getId3().toInt());
         bleScan.setTime(SystemClock.uptimeMillis() - startTime);
         bleScans.add(bleScan);
         updateProgressDialog();

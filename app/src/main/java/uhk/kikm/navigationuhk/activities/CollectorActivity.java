@@ -97,7 +97,7 @@ public class CollectorActivity extends ActionBarActivity {
      * @param cellScans
      */
     public void writePoint(List<WifiScan> wifiScans, List<BleScan> bleScans, List<CellScan> cellScans) {
-//        if (webInterface.isChanged()) // pokud se ziskane souradnice u webinterface zmenily, muzeme to zaznamenat TODO odkomentovat podminku zmeny pozice
+        if (webInterface.isChanged() || C.SERVER_BYPASS) // pokud se ziskane souradnice u webinterface zmenily, muzeme to zaznamenat
         {
             Toast.makeText(this, webInterface.getX() + " " + webInterface.getY(), Toast.LENGTH_LONG).show();
             webInterface.setChanged(false);
@@ -111,8 +111,8 @@ public class CollectorActivity extends ActionBarActivity {
             new DeviceInformation(this).fillPosition(p); // naplnime infomacemi o zarizeni
             new LocalizationService(C.pointA, C.pointB, C.pointC).getPoint(p); // nastavujeme souradnicovy system pro vypocet GPS souradnic a naplnime vypocitanymi souradnicemi
             dbManager.savePosition(p); // Ulozime pozici v DB
-//        } else {
-//            Toast.makeText(this, R.string.collector_coordinates_change, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.collector_coordinates_change, Toast.LENGTH_SHORT).show();
         }
 
 

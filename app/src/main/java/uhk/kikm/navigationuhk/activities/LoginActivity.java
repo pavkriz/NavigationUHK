@@ -36,6 +36,10 @@ public class LoginActivity extends ActionBarActivity {
         webView.loadUrl(C.LOGIN_URL);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.addJavascriptInterface(loginInterface, "Android");
+        if (C.SERVER_BYPASS){
+            Intent intent = new Intent(this, CollectorActivity.class);
+            startActivity(intent);
+        }
     }
 
 
@@ -80,8 +84,6 @@ public class LoginActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, CollectorActivity.class); //TODO zde odstranit obchazeni prihlaseni, nechat jen return
-            startActivity(intent);
             return true;
         }
 

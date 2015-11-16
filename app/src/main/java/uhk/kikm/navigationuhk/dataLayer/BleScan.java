@@ -1,7 +1,5 @@
 package uhk.kikm.navigationuhk.dataLayer;
 
-import java.util.Arrays;
-
 /**
  * Datova trida obsahujici informace o zaznamenanem BLE zarizeni
  * Dominik Matoulek 2015
@@ -9,16 +7,16 @@ import java.util.Arrays;
 public class BleScan {
 
     int rssi;
-    byte[] scanRecord;
-    String address;
+    String uuid = "";
+    int major, minor;
+    String address = "";
     long time;
 
     public BleScan() {
     }
 
-    public BleScan(int rssi, byte[] scanRecord, String address) {
+    public BleScan(int rssi, String address) {
         this.rssi = rssi;
-        this.scanRecord = scanRecord;
         this.address = address;
     }
 
@@ -26,7 +24,9 @@ public class BleScan {
     public String toString() {
         return "BleScan{" +
                 "rssi=" + rssi +
-                ", scanRecord=" + Arrays.toString(scanRecord) +
+                ", uuid='" + uuid + '\'' +
+                ", major=" + major +
+                ", minor=" + minor +
                 ", address='" + address + '\'' +
                 ", time=" + time +
                 '}';
@@ -40,12 +40,28 @@ public class BleScan {
         this.rssi = rssi;
     }
 
-    public byte[] getScanRecord() {
-        return scanRecord;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setScanRecord(byte[] scanRecord) {
-        this.scanRecord = scanRecord;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public int getMajor() {
+        return major;
+    }
+
+    public void setMajor(int major) {
+        this.major = major;
+    }
+
+    public int getMinor() {
+        return minor;
+    }
+
+    public void setMinor(int minor) {
+        this.minor = minor;
     }
 
     public String getAddress() {

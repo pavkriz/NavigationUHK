@@ -416,49 +416,52 @@ public class CouchDBManager {
         // pridani skenu...
         List<Map<String, Object>> scansArray = new ArrayList<>();
         List<WifiScan> wifiScans = p.getWifiScans();
-        for (WifiScan s : wifiScans) {
-            Map<String, Object> scanProperties = new HashMap<>();
-            scanProperties.put("ssid", s.getSSID());
-            scanProperties.put("mac", s.getMAC());
-            scanProperties.put("rssi", s.getStrenght());
-            scanProperties.put("time", s.getTime());
+        if (wifiScans != null && !wifiScans.isEmpty()) {
+            for (WifiScan s : wifiScans) {
+                Map<String, Object> scanProperties = new HashMap<>();
+                scanProperties.put("ssid", s.getSSID());
+                scanProperties.put("mac", s.getMAC());
+                scanProperties.put("rssi", s.getStrenght());
+                scanProperties.put("time", s.getTime());
 
-            scansArray.add(scanProperties);
+                scansArray.add(scanProperties);
+            }
+            properties.put("wifiScans", scansArray);
         }
-        properties.put("wifiScans", scansArray);
 
         List<Map<String, Object>> cellScansArray = new ArrayList<>();
         List<CellScan> cellScans = p.getCellScans();
-        for (CellScan s : cellScans) {
-            Map<String, Object> scanProperties = new HashMap<>();
-            scanProperties.put("cid", s.getCid());
-            scanProperties.put("lac", s.getLac());
-            scanProperties.put("psc", s.getPsc());
-            scanProperties.put("time", s.getTime());
-            scanProperties.put("type", s.getType());
-            scanProperties.put("rssi", s.getRssi());
-
-            cellScansArray.add(scanProperties);
+        if (cellScans != null && !cellScans.isEmpty()) {
+            for (CellScan s : cellScans) {
+                Map<String, Object> scanProperties = new HashMap<>();
+                scanProperties.put("cid", s.getCid());
+                scanProperties.put("lac", s.getLac());
+                scanProperties.put("psc", s.getPsc());
+                scanProperties.put("time", s.getTime());
+                scanProperties.put("type", s.getType());
+                scanProperties.put("rssi", s.getRssi());
+                cellScansArray.add(scanProperties);
+            }
+            properties.put("cellScans", cellScansArray);
         }
-        properties.put("cellScans", cellScansArray);
 
         properties.put("supportsBLE", p.getSupportsBLE());
         // pridani bluetooth scanu
         List<Map<String, Object>> bleScansArray = new ArrayList<>();
         List<BleScan> bleScans = p.getBleScans();
-        if (bleScans != null) {
+        if (bleScans != null && !bleScans.isEmpty()) {
             for (BleScan s : bleScans) {
                 Map<String, Object> bleScanProperties = new HashMap<>();
                 bleScanProperties.put("address", s.getAddress());
                 bleScanProperties.put("rssi", s.getRssi());
                 bleScanProperties.put("time", s.getTime());
-                bleScanProperties.put("scanRecord", s.getScanRecord());
+                bleScanProperties.put("uuid", s.getUuid());
+                bleScanProperties.put("major", s.getMajor());
+                bleScanProperties.put("minor", s.getMinor());
 
                 bleScansArray.add(bleScanProperties);
             }
             properties.put("bleScans", bleScansArray);
-        } else {
-            properties.put("bleScans", "[]");
         }
 
 
@@ -563,13 +566,9 @@ public class CouchDBManager {
                         bleScan.setRssi(Integer.parseInt(scan.get("rssi").toString()));
                         bleScan.setTime(Long.parseLong(scan.get("time").toString()));
 
-                        List<Byte> scanRecordList = doc.getProperty("scanRecord") == null ? new ArrayList<>() : (List) doc.getProperty("scanRecord");
-                        byte[] scanRecord = new byte[scanRecordList.size()];
-
-                        for (int i = 0; i < scanRecordList.size(); i++) {
-                            scanRecord[i] = Byte.valueOf(scanRecordList.get(i));
-                        }
-                        bleScan.setScanRecord(scanRecord);
+                        bleScan.setUuid(scan.get("uuid").toString());
+                        bleScan.setMajor(Integer.parseInt(scan.get("major").toString()));
+                        bleScan.setMinor(Integer.parseInt(scan.get("minor").toString()));
 
                         p.addBleScan(bleScan);
                     }
