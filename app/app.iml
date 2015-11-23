@@ -12,12 +12,10 @@
         <option name="SELECTED_TEST_ARTIFACT" value="_android_test_" />
         <option name="ASSEMBLE_TASK_NAME" value="assembleDebug" />
         <option name="COMPILE_JAVA_TASK_NAME" value="compileDebugSources" />
+        <option name="SOURCE_GEN_TASK_NAME" value="generateDebugSources" />
         <option name="ASSEMBLE_TEST_TASK_NAME" value="assembleDebugTest" />
         <option name="COMPILE_JAVA_TEST_TASK_NAME" value="compileDebugTestSources" />
-        <afterSyncTasks>
-          <task>generateDebugSources</task>
-          <task>generateDebugTestSources</task>
-        </afterSyncTasks>
+        <option name="TEST_SOURCE_GEN_TASK_NAME" value="generateDebugTestSources" />
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
@@ -92,6 +90,7 @@
     <orderEntry type="library" exported="" name="jackson-databind-2.5.0" level="project" />
     <orderEntry type="library" exported="" name="couchbase-lite-android-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="jackson-annotations-2.5.0" level="project" />
+    <orderEntry type="library" exported="" name="android-beacon-library-2.6.1" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="stateless4j-2.4.0" level="project" />
