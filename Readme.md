@@ -13,4 +13,4 @@ Radio-map based navigation project.
 * Pockat, az probehne mereni (napr. 10s, dokonceni je indikovano zmizenim dialogu)
 * Dokud me to bavi `GOTO LOOP`
 * Menu &rarr; Seznam fingerprintu
-* Menu &rarr; Nahrat DB (uploaduje nove fingerprinty na server)
+* Menu &rarr; Stahnout DB, Menu &rarr; Nahrat DB (provede kompletni synchronizaci fingerprintu mezi serverem a mobilem)
