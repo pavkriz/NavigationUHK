@@ -21,6 +21,11 @@
         android:id="@+id/action_level_4"
         android:title="Patro 4"
         app:showAsAction="never"
+    />
+    <item
+        android:id="@+id/action_level_0"
+        android:title="Piskoviste"
+        app:showAsAction="never"
         />
     <item
         android:id="@+id/action_settings"

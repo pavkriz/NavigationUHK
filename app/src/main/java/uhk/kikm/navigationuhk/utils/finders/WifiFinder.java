@@ -62,11 +62,11 @@ public class WifiFinder {
                     int index = containsMAC(s.getMAC(), p);
 
                     if (index >= 0) {
-                        distance += Math.pow(p.getScan(index).getStrenght() + s.getStrenght(), 2);
+                        distance += Math.pow(p.getScan(index).getStrength() + s.getStrength(), 2);
                     }
                     else if (index == -1)
                     {
-                        distance += Math.pow(SIGNAL_NO_RECIEVED + s.getStrenght(), 2);
+                        distance += Math.pow(SIGNAL_NO_RECIEVED + s.getStrength(), 2);
                     }
                 }
             } else {
@@ -74,9 +74,9 @@ public class WifiFinder {
                     int index = containsMAC(s.getMAC(), scansToIdentify);
 
                     if (index >= 0) {
-                        distance += Math.pow(scansToIdentify.get(index).getStrenght() + s.getStrenght(), 2);
+                        distance += Math.pow(scansToIdentify.get(index).getStrength() + s.getStrength(), 2);
                     } else if (index == -1) {
-                        distance += Math.pow(SIGNAL_NO_RECIEVED + s.getStrenght(), 2);
+                        distance += Math.pow(SIGNAL_NO_RECIEVED + s.getStrength(), 2);
                     }
                 }
             }

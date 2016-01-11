@@ -3,6 +3,7 @@ package uhk.kikm.navigationuhk.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,10 +12,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import uhk.kikm.navigationuhk.R;
 import uhk.kikm.navigationuhk.dataLayer.CouchDBManager;
@@ -31,7 +35,7 @@ public class ListPositionsActivity extends ActionBarActivity {
 
     CouchDBManager dbManager;
     List<Fingerprint> fingerprints;
-    Map<String, String> positionsMap;
+    SortedMap<String, String> positionsMap;
     ArrayList<String> positionsStrings;
     ListView lv;
     ArrayAdapter<String> adapter;
@@ -44,7 +48,18 @@ public class ListPositionsActivity extends ActionBarActivity {
         dbManager = new CouchDBManager(this);
         Log.d(getClass().getName(), "Open db connection");
 
-        positionsMap = new HashMap<>();
+        positionsMap = new TreeMap(new Comparator<String>() {
+            public int compare(String s1, String s2) {
+            long t1 = 0, t2 = 0;
+                try {
+                    t1 = new SimpleDateFormat("dd. MM. yyyy kk:mm:ss").parse(s1.substring(0, s1.indexOf("-") - 1)).getTime();
+                    t2 = new SimpleDateFormat("dd. MM. yyyy kk:mm:ss").parse(s2.substring(0, s2.indexOf("-") - 1)).getTime();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return t1 == t2 ? 0 : (t1 < t2 ? 1 : -1);
+            }
+        });
 
         makeDataForView();
 
@@ -66,12 +81,14 @@ public class ListPositionsActivity extends ActionBarActivity {
      */
     private void makeDataForView() {
         positionsMap.clear();
-
         fingerprints = dbManager.getAllFingerprints();
 
-        for (Fingerprint p : fingerprints)
-        {
-              positionsMap.put(String.valueOf(p.getX()) + " " + String.valueOf(p.getY()) + " " + p.getId(), p.getId());
+        for (Fingerprint p : fingerprints) {
+            positionsMap.put(DateFormat.format("dd. MM. yyyy kk:mm:ss", p.getCreatedDate()) + " - "
+                    + p.getLevel() + " - "
+                    + p.getManufacturer() + " "
+                    + p.getModel() + " "
+                    + p.getId(), p.getId());
         }
 
         positionsStrings = new ArrayList<>(positionsMap.keySet());
@@ -126,7 +143,6 @@ public class ListPositionsActivity extends ActionBarActivity {
      */
     private void showDetailsOfFingerprint(final String position)
     {
-
         Intent intent = new Intent(this, PositionInfoActivity.class);
         intent.putExtra("id", positionsMap.get(position));
         startActivity(intent);

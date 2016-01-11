@@ -40,7 +40,7 @@ public class CollectorActivity extends ActionBarActivity {
     WebViewInterface webInterface;
     CouchDBManager dbManager;
     WebView view;
-    String selectedLevel = "J3NP";
+    String selectedLevel = "Piskoviste";
 
     SensorScanner sensorScanner;
 
@@ -152,6 +152,8 @@ public class CollectorActivity extends ActionBarActivity {
             changeLevel("J3NP");
         } else if (id == R.id.action_level_4) { // 4. patro
             changeLevel("J4NP");
+        } else if (id == R.id.action_level_0) { // Sandbox
+            changeLevel("Piskoviste"); // // Testing purposes only
 //        } else if (id == R.id.action_find_ble) { // BLE hledani
 //            findPositionByBle();
         }

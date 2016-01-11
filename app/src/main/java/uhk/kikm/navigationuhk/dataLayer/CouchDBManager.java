@@ -421,7 +421,10 @@ public class CouchDBManager {
                 Map<String, Object> scanProperties = new HashMap<>();
                 scanProperties.put("ssid", s.getSSID());
                 scanProperties.put("mac", s.getMAC());
-                scanProperties.put("rssi", s.getStrenght());
+                scanProperties.put("rssi", s.getStrength());
+                scanProperties.put("channel", s.getChannel());
+                scanProperties.put("frequency", s.getFrequency());
+                scanProperties.put("technology", s.getTechnology());
                 scanProperties.put("time", s.getTime());
 
                 scansArray.add(scanProperties);
@@ -529,29 +532,36 @@ public class CouchDBManager {
             // Parsovani skenu... We need to go deeper... List<Map<String, Object>>
 
             List<Map<String, Object>> scans = (List) doc.getProperty("wifiScans");
-            for (Map<String, Object> scan : scans) {
-                WifiScan s = new WifiScan();
+            if (scans != null) { // Fingerprint bez WiFi?
+                for (Map<String, Object> scan : scans) {
+                    WifiScan s = new WifiScan();
 
-                s.setMAC(scan.get("mac").toString());
-                s.setSSID(scan.get("ssid").toString());
-                s.setStrentgh(Integer.parseInt(scan.get("rssi").toString()));
-                s.setTime(Long.parseLong(scan.get("time").toString()));
+                    s.setMAC(scan.get("mac").toString());
+                    s.setSSID(scan.get("ssid").toString());
+                    s.setStrength(Integer.parseInt(scan.get("rssi").toString()));
+                    if (scan.get("channel") != null) s.setChannel(Integer.parseInt(scan.get("channel").toString()));
+                    if (scan.get("frequency") != null) s.setFrequency(Integer.parseInt(scan.get("frequency").toString()));
+                    if (scan.get("technology") != null) s.setTechnology(scan.get("technology").toString());
+                    s.setTime(Long.parseLong(scan.get("time").toString()));
 
-                p.addScan(s);
+                    p.addScan(s);
+                }
             }
 
             List<Map<String, Object>> cellScans = (List) doc.getProperty("cellScans");
-            for (Map<String, Object> scan : cellScans) {
-                CellScan s = new CellScan();
+            if (cellScans != null) { // Fingerprint bez BTS?
+                for (Map<String, Object> scan : cellScans) {
+                    CellScan s = new CellScan();
 
-                s.setCid(Integer.parseInt(scan.get("cid").toString()));
-                s.setLac(Integer.parseInt(scan.get("lac").toString()));
-                s.setPsc(Integer.parseInt(scan.get("psc").toString()));
-                s.setTime(Long.parseLong(scan.get("time").toString()));
-                s.setType(Integer.parseInt(scan.get("type").toString()));
-                s.setRssi(Integer.parseInt(scan.get("rssi").toString()));
+                    s.setCid(Integer.parseInt(scan.get("cid").toString()));
+                    s.setLac(Integer.parseInt(scan.get("lac").toString()));
+                    s.setPsc(Integer.parseInt(scan.get("psc").toString()));
+                    s.setTime(Long.parseLong(scan.get("time").toString()));
+                    s.setType(Integer.parseInt(scan.get("type").toString()));
+                    s.setRssi(Integer.parseInt(scan.get("rssi").toString()));
 
-                p.addCellScan(s);
+                    p.addCellScan(s);
+                }
             }
 
             p.setSupportsBLE(Boolean.valueOf(parseProperty("supportsBLE", doc)));
@@ -559,18 +569,21 @@ public class CouchDBManager {
             if (doc.getProperty("bleScans") != null) { // Pokud neni null
                 if (!doc.getProperty("bleScans").equals("[]")) { // nebo nebyly zaznamenany vysilace
                     List<Map<String, Object>> bleScans = (List) doc.getProperty("bleScans");
-                    for (Map<String, Object> scan : bleScans) {
-                        BleScan bleScan = new BleScan();
 
-                        bleScan.setAddress(scan.get("address").toString());
-                        bleScan.setRssi(Integer.parseInt(scan.get("rssi").toString()));
-                        bleScan.setTime(Long.parseLong(scan.get("time").toString()));
+                    if (bleScans != null) {
+                        for (Map<String, Object> scan : bleScans) {
+                            BleScan bleScan = new BleScan();
 
-                        bleScan.setUuid(scan.get("uuid").toString());
-                        bleScan.setMajor(Integer.parseInt(scan.get("major").toString()));
-                        bleScan.setMinor(Integer.parseInt(scan.get("minor").toString()));
+                            bleScan.setAddress(scan.get("address").toString());
+                            bleScan.setRssi(Integer.parseInt(scan.get("rssi").toString()));
+                            bleScan.setTime(Long.parseLong(scan.get("time").toString()));
 
-                        p.addBleScan(bleScan);
+                            if (scan.get("uuid") != null) bleScan.setUuid(scan.get("uuid").toString());
+                            if (scan.get("major") != null) bleScan.setMajor(Integer.parseInt(scan.get("major").toString()));
+                            if (scan.get("minor") != null) bleScan.setMinor(Integer.parseInt(scan.get("minor").toString()));
+
+                            p.addBleScan(bleScan);
+                        }
                     }
                 }
             }

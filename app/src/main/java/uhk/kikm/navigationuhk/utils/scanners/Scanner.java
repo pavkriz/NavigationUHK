@@ -262,7 +262,7 @@ public class Scanner {
     private List<WifiScan> convertWifiResults(List<ScanResult> scanResults) {
         List<WifiScan> wifiScans = new ArrayList<>();
         for (ScanResult scan : scanResults) {
-            WifiScan bleScan = new WifiScan(scan.SSID, scan.BSSID, scan.level);
+            WifiScan bleScan = new WifiScan(scan.SSID, scan.BSSID, scan.level, scan.frequency);
 //            bleScan.setTime((scan.timestamp / 1000) - (startTime)); //scan.timestamp ne nekterych telefonech/verzich/??? hazi nesmysly a na jinych zase funguje perfektne
             bleScan.setTime(SystemClock.uptimeMillis() - startTime);
             wifiScans.add(bleScan);

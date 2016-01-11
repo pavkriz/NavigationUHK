@@ -57,7 +57,7 @@ public class BluetoothFinder {
                     int index = containsAddress(s.getAddress(), p);
 
                     if (index >= 0) {
-                        distance += Math.pow(p.getScan(index).getStrenght() + s.getRssi(), 2);
+                        distance += Math.pow(p.getScan(index).getStrength() + s.getRssi(), 2);
                     }
                     else if (index == -1)
                     {
