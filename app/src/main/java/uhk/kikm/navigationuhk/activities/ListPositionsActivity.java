@@ -23,6 +23,7 @@ import java.util.TreeMap;
 import uhk.kikm.navigationuhk.R;
 import uhk.kikm.navigationuhk.dataLayer.CouchDBManager;
 import uhk.kikm.navigationuhk.dataLayer.Fingerprint;
+import uhk.kikm.navigationuhk.utils.reports.ExceptionHandler;
 
 /**
  * Aktivita urcena na zobrazeni seznamu vsech porizenych fingerprintu
@@ -43,6 +44,7 @@ public class ListPositionsActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_list_positions);
 
         dbManager = new CouchDBManager(this);
@@ -52,8 +54,8 @@ public class ListPositionsActivity extends ActionBarActivity {
             public int compare(String s1, String s2) {
             long t1 = 0, t2 = 0;
                 try {
-                    t1 = new SimpleDateFormat("dd. MM. yyyy kk:mm:ss").parse(s1.substring(0, s1.indexOf("-") - 1)).getTime();
-                    t2 = new SimpleDateFormat("dd. MM. yyyy kk:mm:ss").parse(s2.substring(0, s2.indexOf("-") - 1)).getTime();
+                    t1 = new SimpleDateFormat("dd. MM. yyyy HH:mm:ss").parse(s1.substring(0, s1.indexOf("-") - 1)).getTime();
+                    t2 = new SimpleDateFormat("dd. MM. yyyy HH:mm:ss").parse(s2.substring(0, s2.indexOf("-") - 1)).getTime();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -90,7 +92,6 @@ public class ListPositionsActivity extends ActionBarActivity {
                     + p.getModel() + " "
                     + p.getId(), p.getId());
         }
-
         positionsStrings = new ArrayList<>(positionsMap.keySet());
     }
 

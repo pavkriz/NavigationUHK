@@ -24,6 +24,7 @@ import uhk.kikm.navigationuhk.dataLayer.Fingerprint;
 import uhk.kikm.navigationuhk.dataLayer.WifiScan;
 import uhk.kikm.navigationuhk.utils.C;
 import uhk.kikm.navigationuhk.utils.localization.LocalizationService;
+import uhk.kikm.navigationuhk.utils.reports.ExceptionHandler;
 import uhk.kikm.navigationuhk.utils.scanners.DeviceInformation;
 import uhk.kikm.navigationuhk.utils.scanners.ScanResultListener;
 import uhk.kikm.navigationuhk.utils.scanners.Scanner;
@@ -50,6 +51,7 @@ public class CollectorActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_collector);
 
         webInterface = new WebViewInterface(this);
