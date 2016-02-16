@@ -31,5 +31,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.couchbase.lite:couchbase-lite-android:1.1.0'
     compile 'com.android.support:support-v4:21.0.3'
-    compile 'org.altbeacon:android-beacon-library:2+'
+    compile 'org.altbeacon:android-beacon-library:2.7'
 }
