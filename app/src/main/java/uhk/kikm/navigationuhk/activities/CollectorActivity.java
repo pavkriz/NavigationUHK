@@ -156,6 +156,8 @@ public class CollectorActivity extends ActionBarActivity {
             changeLevel("J4NP");
         } else if (id == R.id.action_level_0) { // Sandbox
             changeLevel("Piskoviste"); // // Testing purposes only
+        } else if (id == R.id.action_level_krizovi) {
+            changeLevel("Krizovi");
 //        } else if (id == R.id.action_find_ble) { // BLE hledani
 //            findPositionByBle();
         }
