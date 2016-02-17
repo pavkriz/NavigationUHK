@@ -54,7 +54,7 @@ public class Scanner {
      */
     boolean cont = false;
 
-    BeaconConsumer beaconConsumer;
+    DefaultBeaconConsumer beaconConsumer;
     WifiManager wm;
     BroadcastReceiver wifiBroadcastReceiver;
 
@@ -70,7 +70,7 @@ public class Scanner {
      * Priprava broadcast receiveru, manazeru apod.
      */
     private void init() {
-        beaconConsumer = new BeaconConsumer(this, context);
+        beaconConsumer = new ImmediateBeaconConsumer(this, context, false);
 
         //pripravi wifiManager a broadcast receiver
         wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);

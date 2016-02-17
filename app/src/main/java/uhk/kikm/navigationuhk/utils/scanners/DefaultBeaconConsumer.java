@@ -19,13 +19,13 @@ import uhk.kikm.navigationuhk.utils.C;
 /**
  * Created by Matej on 8.11.2015.
  */
-public class BeaconConsumer implements org.altbeacon.beacon.BeaconConsumer{
+public class DefaultBeaconConsumer implements org.altbeacon.beacon.BeaconConsumer{
     Context context;
     Scanner scanner;
     BeaconManager beaconManager;
 
 
-    public BeaconConsumer(Scanner scanner, Context context) {
+    public DefaultBeaconConsumer(Scanner scanner, Context context) {
         this.scanner = scanner;
         this.context = context;
         //pripravi beacon manager s layoutem
