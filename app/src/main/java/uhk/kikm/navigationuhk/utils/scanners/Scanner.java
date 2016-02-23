@@ -45,6 +45,8 @@ public class Scanner {
     List<CellScan> cellScans = new ArrayList<>();
 
     long startTime;
+
+    int durationMillis;
     /**
      * zda prave probiha sken
      */
@@ -59,7 +61,8 @@ public class Scanner {
     BroadcastReceiver wifiBroadcastReceiver;
 
     ProgressDialog progressDialog;
-    Timer timer;
+    Timer finishTimer;
+    Timer progressTimer;
 
     public Scanner(Context context) {
         this.context = context;
@@ -110,13 +113,14 @@ public class Scanner {
      * @return - zda bylo skenovani uspesne spusteno. False kdyz jsou nektere adaptery vypnute nebo skenovani uz bezi
      */
     public boolean startScan(final int time, boolean wifi, boolean ble, boolean cell, final ScanResultListener scanResultListener) {
+        durationMillis = time;
         ble = ble && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE); //vyradime ble pokud ho zarizeni nema.
         if (running || !enableHW(wifi, ble)) {
             return false; //pokud jeste nedobehlo probihajici skenovani (nebo problemy pri zapinani HW), NEstartuj nove a vrat false
         }
         running = true;
         cont = true; //nastav aby se synchronni skenovani cyklicky spoustela znovu
-        progressDialog = showProgressDialog();
+        showProgressDialog();
         wifiScans.clear();
         bleScans.clear();
         cellScans.clear();
@@ -148,8 +152,8 @@ public class Scanner {
         }
 
         //casovac ukonceni skenovani
-        timer = new Timer();
-        timer.schedule(
+        finishTimer = new Timer();
+        finishTimer.schedule(
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
@@ -158,7 +162,19 @@ public class Scanner {
                         }
                         stopScan();
                     }
-                }, time);
+                }, durationMillis);
+
+        // casovac aktualizujici progress bar behem skenovani
+        progressTimer = new Timer();
+        progressTimer.schedule(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                if (running && progressDialog != null) {
+                    updateProgressDialog();
+                }
+            }
+        }, 1000, 1000); // fire every 1s to update progress time
+
         return true;
     }
 
@@ -210,7 +226,8 @@ public class Scanner {
             return;
         }
         cont = false;
-        timer.cancel();
+        finishTimer.cancel();
+        progressTimer.cancel();
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
@@ -247,7 +264,8 @@ public class Scanner {
             ((Activity) context).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    progressDialog.setMessage("BluetoothLE: " + bleScans.size() + "\nWifi: " + wifiScans.size() + "\nCellular BTS: " + cellScans.size());
+                    long currentSecondsDuration = (SystemClock.uptimeMillis() - startTime)/1000;
+                    progressDialog.setMessage("BluetoothLE: " + bleScans.size() + "\nWifi: " + wifiScans.size() + "\nCellular BTS: " + cellScans.size() + "\n" + currentSecondsDuration + "s");
                 }
             });
         }
