@@ -27,7 +27,7 @@ public class C {
     /**
      * Jak dlouho ma probihat skenovani pri sberu dat
      */
-    public static int SCAN_COLLECTOR_TIME = 10000;
+    public static int SCAN_COLLECTOR_TIME = 20000;
 
     /**
      * Po jak dlouhe dobe se maji znovu ulozit dostupne BTSky
