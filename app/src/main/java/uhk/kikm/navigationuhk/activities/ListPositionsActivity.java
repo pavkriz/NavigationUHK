@@ -27,7 +27,7 @@ import uhk.kikm.navigationuhk.utils.reports.ExceptionHandler;
 
 /**
  * Aktivita urcena na zobrazeni seznamu vsech porizenych fingerprintu
- *
+ * <p/>
  * Dominik Matoulek 2015
  */
 
@@ -52,7 +52,7 @@ public class ListPositionsActivity extends ActionBarActivity {
 
         positionsMap = new TreeMap(new Comparator<String>() {
             public int compare(String s1, String s2) {
-            long t1 = 0, t2 = 0;
+                long t1 = 0, t2 = 0;
                 try {
                     t1 = new SimpleDateFormat("dd. MM. yyyy HH:mm:ss").parse(s1.substring(0, s1.indexOf("-") - 1)).getTime();
                     t2 = new SimpleDateFormat("dd. MM. yyyy HH:mm:ss").parse(s2.substring(0, s2.indexOf("-") - 1)).getTime();
@@ -83,8 +83,7 @@ public class ListPositionsActivity extends ActionBarActivity {
      */
     private void makeDataForView() {
         positionsMap.clear();
-        fingerprints = dbManager.getAllFingerprints();
-
+        fingerprints = dbManager.getLatestFingerprints(50);
         for (Fingerprint p : fingerprints) {
             positionsMap.put(DateFormat.format("dd. MM. yyyy kk:mm:ss", p.getCreatedDate()) + " - "
                     + p.getLevel() + " - "
@@ -113,15 +112,11 @@ public class ListPositionsActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        }
-        else if (id == R.id.action_upload)
-        {
+        } else if (id == R.id.action_upload) {
             dbManager.uploadDBToServer(this);
 
 
-        }
-        else if (id == R.id.action_download)
-        {
+        } else if (id == R.id.action_download) {
             dbManager.downloadDBFromServer(this);
             makeDataForView();
             adapter.notifyDataSetChanged();
@@ -140,10 +135,10 @@ public class ListPositionsActivity extends ActionBarActivity {
 
     /**
      * Zobrazi novou aktivitu obsahujici informace o fingerprintu
+     *
      * @param position ID fingerprintu v DB
      */
-    private void showDetailsOfFingerprint(final String position)
-    {
+    private void showDetailsOfFingerprint(final String position) {
         Intent intent = new Intent(this, PositionInfoActivity.class);
         intent.putExtra("id", positionsMap.get(position));
         startActivity(intent);

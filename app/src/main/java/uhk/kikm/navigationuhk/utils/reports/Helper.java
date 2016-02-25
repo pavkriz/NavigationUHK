@@ -27,6 +27,7 @@ public class Helper {
 	void saveAsFile(String ErrorContent, Context context) {
 		try {
 
+			// Must be external storage because of http://stackoverflow.com/questions/17740976/send-email-with-attachment-from-internal-storage?answertab=votes#tab-top
 			String filePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 			File dir = new File(filePath);
 

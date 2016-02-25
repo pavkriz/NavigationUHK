@@ -51,6 +51,7 @@ public class CouchDBManager {
     final String VIEW_BY_MAC = "by_mac"; // Nazev pohledu, ktery vyhleda dokumetny podle MAC adres
     final String VIEW_BY_BLE_ADDRESS = "by_ble_mac"; // Nazev pohledu, ktery vyhleda dokumenty podle Bluetooth adres
     final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"; // Format pouzivaneho casu - ROK-MESIC-DEN HODINA:MINUTA:SEKUNDA
+    final String LATEST_ONLY = "latest_only"; // CouchDatabase view for getting only latest X fingerprints
 
 
     /**
@@ -94,6 +95,13 @@ public class CouchDBManager {
                         emitter.emit(scan.get("address"), document);
                     }
 
+                }
+            }, "1");
+
+            db.getView(LATEST_ONLY).setMap(new Mapper() {
+                @Override
+                public void map(Map<String, Object> document, Emitter emitter) {
+                    emitter.emit(document.get("createdAt"), document);
                 }
             }, "1");
 
@@ -314,6 +322,30 @@ public class CouchDBManager {
     }
 
     /**
+     * Return latest fingerprints
+     *
+     * @param count Maximum number of returned fingerprints
+     * @return List of fingerprints
+     */
+    public List<Fingerprint> getLatestFingerprints(int count) {
+        ArrayList<Fingerprint> fingerprints = new ArrayList<>();
+        try {
+            Query query = db.getView(LATEST_ONLY).createQuery();
+            query.setMapOnly(true);
+            query.setDescending(true);
+            query.setLimit(count);
+            for (Iterator<QueryRow> iterator = query.run(); iterator.hasNext(); ) {
+                Fingerprint fingerprint = getFingerprintFromDocument(iterator.next().getDocument());
+                if (fingerprint != null) fingerprints.add(fingerprint);
+            }
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+        return fingerprints;
+    }
+
+
+    /**
      * Odstrani fingerprint z DB
      *
      * @param id ID fingerprintu
@@ -478,7 +510,6 @@ public class CouchDBManager {
      * @return Instanci tridy Fingerprint naplnenou daty
      */
     private Fingerprint getFingerprintFromDocument(Document doc) {
-
         try {
             Fingerprint p = new Fingerprint();
             // poloha
@@ -664,7 +695,7 @@ public class CouchDBManager {
         int dayToAdd = 1;
         cal.add(Calendar.DATE, dayToAdd);
         Date expires = cal.getTime();
-
+        
         push.setCookie(cookieName, sessionId, "/", expires, false, false);
 
         final ProgressDialog pd = ProgressDialog.show(context, context.getString(R.string.wait), context.getString(R.string.sync_progress), false);
