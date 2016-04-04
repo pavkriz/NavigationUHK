@@ -38,4 +38,10 @@ public class C {
      * Jak dlouho ma byt skenovano pri hledani
      */
     public static int SCAN_FINDER_TIME = 5000;
+
+    /**
+     * true = nejdrive se skenuji BLE beacony, pak WiFi (prepnuti v polovine casu skenovani, tj. pri sberu dat v SCAN_COLLECTOR_TIME/2)
+     * false = skenovanu BLE i WiFi probiha paralelne
+     */
+    public static boolean SERIAL_MODE = false;
 }

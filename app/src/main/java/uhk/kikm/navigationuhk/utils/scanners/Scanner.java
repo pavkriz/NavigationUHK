@@ -63,6 +63,7 @@ public class Scanner {
     ProgressDialog progressDialog;
     Timer finishTimer;
     Timer progressTimer;
+    Timer switchBleToWifiTimer;
 
     public Scanner(Context context) {
         this.context = context;
@@ -125,8 +126,9 @@ public class Scanner {
         bleScans.clear();
         cellScans.clear();
         startTime = SystemClock.uptimeMillis(); //zaznamenej cas zacatku skenovani
-        if (wifi) {
+        if (wifi && !C.SERIAL_MODE) {
             //zaregistrovani receiveru pro wifi sken
+            // odlozeno v seriovem resimu na timer
             context.registerReceiver(wifiBroadcastReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
             wm.startScan();
         }
@@ -174,6 +176,22 @@ public class Scanner {
                 }
             }
         }, 1000, 1000); // fire every 1s to update progress time
+
+        if (C.SERIAL_MODE) {
+            // casovac prepinajici z BLE skenovani na WiFi (seriove skenovani misto paralelniho)
+            switchBleToWifiTimer = new Timer();
+            switchBleToWifiTimer.schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            // vypnout skenovani BLE
+                            beaconConsumer.unBind();
+                            // zacit skenovat WiFi
+                            context.registerReceiver(wifiBroadcastReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+                            wm.startScan();
+                        }
+                    }, durationMillis / 2); // pulka celkove casu skenovani
+        }
 
         return true;
     }
@@ -228,6 +246,9 @@ public class Scanner {
         cont = false;
         finishTimer.cancel();
         progressTimer.cancel();
+        if (switchBleToWifiTimer != null) {
+            switchBleToWifiTimer.cancel();
+        }
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
