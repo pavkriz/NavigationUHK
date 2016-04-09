@@ -91,6 +91,18 @@ public class WifiScan {
                 '}';
     }
 
+    public String toJson() {
+        return "{" +
+            "\"SSID\":\"" + SSID + "\"" +
+            ", \"MAC\":\"" + MAC + "\"" +
+            ", \"technology\":\"802.11" + technology + "\"" +
+            ", \"frequency\":" + frequency +
+            ", \"channel\":" + channel +
+            ", \"strength\":" + strength +
+            ", \"time\":" + time +
+            "}";
+    }
+
     /**
      * Get WiFi channel and technology from its frequency
      *

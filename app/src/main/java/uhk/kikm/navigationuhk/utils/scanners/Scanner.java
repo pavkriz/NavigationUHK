@@ -56,6 +56,8 @@ public class Scanner {
      */
     boolean cont = false;
 
+    boolean withProgressDialog = true;
+
     DefaultBeaconConsumer beaconConsumer;
     WifiManager wm;
     BroadcastReceiver wifiBroadcastReceiver;
@@ -64,9 +66,15 @@ public class Scanner {
     Timer finishTimer;
     Timer progressTimer;
 
+
     public Scanner(Context context) {
         this.context = context;
+
         init();
+    }
+
+    public void setWithProgressDialog(boolean withProgressDialog) {
+        this.withProgressDialog = withProgressDialog;
     }
 
     /**
@@ -120,7 +128,7 @@ public class Scanner {
         }
         running = true;
         cont = true; //nastav aby se synchronni skenovani cyklicky spoustela znovu
-        showProgressDialog();
+        if (withProgressDialog) showProgressDialog();
         wifiScans.clear();
         bleScans.clear();
         cellScans.clear();
@@ -158,6 +166,7 @@ public class Scanner {
                     @Override
                     public void run() {
                         if (running && scanResultListener != null) {
+                            withProgressDialog = true;
                             scanResultListener.onScanFinished(wifiScans, bleScans, cellScans);
                         }
                         stopScan();

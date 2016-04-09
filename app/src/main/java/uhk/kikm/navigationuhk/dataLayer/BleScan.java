@@ -32,6 +32,17 @@ public class BleScan {
                 '}';
     }
 
+    public String toJson() {
+        return "{" +
+            "\"rssi\":" + rssi +
+            ", \"uuid\":\"" + uuid +  "\"" +
+            ", \"major\":" + major +
+            ", \"minor\":" + minor +
+            ", \"address\":\"" + address +  "\"" +
+            ", \"time\":" + time +
+            "}";
+    }
+
     public int getRssi() {
         return rssi;
     }
