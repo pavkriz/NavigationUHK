@@ -37,5 +37,5 @@ public class C {
     /**
      * Jak dlouho ma byt skenovano pri hledani
      */
-    public static int SCAN_FINDER_TIME = 5000;
+    public static int SCAN_FINDER_TIME = 10000;
 }
