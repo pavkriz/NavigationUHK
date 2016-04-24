@@ -44,13 +44,11 @@ import uhk.kikm.navigationuhk.utils.scanners.SensorScanner;
  */
 
 public class MainActivity extends ActionBarActivity {
-
 	WebView view;
 	CouchDBManager dbManager;
 	Scanner scanner;
-
 	SensorScanner sensorScanner;
-
+	String selectedLevel = "Piskoviste";
 	boolean search;
 
 	@SuppressLint("SetJavaScriptEnabled")
@@ -230,8 +228,13 @@ public class MainActivity extends ActionBarActivity {
 
 						try {
 							Log.i(getClass().toString(), "HTTP request sent: http://beacon.uhk.cz/fimnav-webview/?" + HttpResponseParser.parseJsonToQuery(hashMap));
-							view.loadUrl("http://beacon.uhk.cz/fimnav-webview/?map=" + URLEncoder.encode(hashMap.get("floor"), "UTF-8")
-								+ "&x=" + URLEncoder.encode(hashMap.get("x"), "UTF-8") + "&y=" + URLEncoder.encode(hashMap.get("y"), "UTF-8"));  // nacteni souboru do prohlizece
+							if (hashMap.get("floor").equals(selectedLevel)) {
+								view.loadUrl("javascript:scrollToLogicXY(" + hashMap.get("x") + ", " + hashMap.get("y") + ");");
+							} else {
+								view.loadUrl("http://beacon.uhk.cz/fimnav-webview/?map=" + URLEncoder.encode(hashMap.get("floor"), "UTF-8")
+									+ "&x=" + URLEncoder.encode(hashMap.get("x"), "UTF-8") + "&y=" + URLEncoder.encode(hashMap.get("y"), "UTF-8"));  // nacteni souboru do prohlizece
+							}
+							selectedLevel = hashMap.get("floor");
 						} catch (UnsupportedEncodingException e) {
 							e.printStackTrace();
 						}
