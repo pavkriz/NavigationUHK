@@ -54,6 +54,7 @@ public class CouchDBManager {
     final String LATEST_ONLY = "latest_only"; // CouchDatabase view for getting only latest X fingerprints
 
 
+
     /**
      * Vytvari instanci DbManageru pro komunikaci s DB Couchbase mibole
      *
@@ -658,6 +659,7 @@ public class CouchDBManager {
     public void downloadDBFromServer(Context context) {
         final Replication pull = db.createPullReplication(serverURL);
 
+
         final ProgressDialog pd = ProgressDialog.show(context, "Wait....", "Sync in progess", false);
         pull.addChangeListener(new Replication.ChangeListener() {
             @Override
@@ -687,16 +689,21 @@ public class CouchDBManager {
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
 
-        String cookieName = sp.getString("cookie_name", "SyncGatewaySession");
-        String sessionId = sp.getString("session_id", "sss");
+        // Sometimes crash because of this https://github.com/couchbase/couchbase-lite-android/issues/196
+        try {
+            String cookieName = sp.getString("cookie_name", "SyncGatewaySession");
+            String sessionId = sp.getString("session_id", "sss");
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        int dayToAdd = 1;
-        cal.add(Calendar.DATE, dayToAdd);
-        Date expires = cal.getTime();
-        
-        push.setCookie(cookieName, sessionId, "/", expires, false, false);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date());
+            int dayToAdd = 1;
+            cal.add(Calendar.DATE, dayToAdd);
+            Date expires = cal.getTime();
+
+            push.setCookie(cookieName, sessionId, "/", expires, false, false);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
 
         final ProgressDialog pd = ProgressDialog.show(context, context.getString(R.string.wait), context.getString(R.string.sync_progress), false);
         push.addChangeListener(new Replication.ChangeListener() {
